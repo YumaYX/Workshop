@@ -1,5 +1,6 @@
 ---
 layout: post
+title: Sambaサーバー
 ---
 
 Sambaサーバーを構築する。ネットワークを通して、ファイル共有をする。

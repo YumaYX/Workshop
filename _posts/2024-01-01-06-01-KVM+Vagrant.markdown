@@ -1,5 +1,6 @@
 ---
 layout: post
+title: KVM+Vagrant
 ---
 
 仮想マシンをブートする。

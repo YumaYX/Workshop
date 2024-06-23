@@ -1,5 +1,6 @@
 ---
 layout: post
+title: Logical Volumeの拡張
 ---
 
 firewalldを使って、ファイアウォールを設定する。

@@ -1,5 +1,6 @@
 ---
 layout: post
+title: AlmaLinux
 ---
 
 本サイトでは、`AlmaLinux 9`を使用する。

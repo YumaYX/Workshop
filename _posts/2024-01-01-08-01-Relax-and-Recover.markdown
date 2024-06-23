@@ -1,5 +1,6 @@
 ---
 layout: post
+title: Relax-and-Recover
 ---
 
 Relax-and-Recoverを用いて、サーバーバックアップ・リストアをする。

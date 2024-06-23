@@ -1,5 +1,6 @@
 ---
 layout: post
+title: Logical Volumeの拡張
 ---
 
 Logical Volumeを拡張する。
