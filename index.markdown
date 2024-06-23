@@ -9,3 +9,4 @@ layout: default
   <h2><a href="/workshop/{{ post.url }}">{{ post.title }}</a></h2>
   <p>{{ post.excerpt | markdownify }}</p>
 {% endfor %}
+
