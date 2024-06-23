@@ -150,11 +150,10 @@ sesearch -b httpd_can_network_connect --allow
 # -b boolean
 ```
 
-# install commands
+# install semanage command
 
 ```sh
-# 8, 9
-# semanage
+# semanage for 8, 9
 dnf -y install policycoreutils-python-utils
 ```
 

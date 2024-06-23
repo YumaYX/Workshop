@@ -2,36 +2,36 @@
 layout: post
 ---
 
-firewalldを使って、ファイアーウォールを設定する。
+firewalldを使って、ファイアウォールを設定する。
 
 # Firewalld
 
-## Install
+## インストール
 
 ```sh
 dnf -y install firewalld
 systemctl enable --now firewalld
 ```
 
-## Check
+## 適用ファイアウォール一覧
 
 ```sh
 firewall-cmd --list-all
 ```
 
-## Service: HTTP
+## Service: HTTP 開放
 
 ```sh
 firewall-cmd --permanent --zone=public --add-service=http
 ```
 
-## Port Number: 80
+## Port Number: 80 開放
 
 ```sh
 firewall-cmd --permanent --zone=public --add-port=80/tcp
 ```
 
-## Delete
+## ポート閉塞
 
 ```sh
 firewall-cmd --permanent --zone=public --remove-service=http
@@ -42,4 +42,5 @@ firewall-cmd --permanent --zone=public --remove-port=80/tcp
 
 ```sh
 firewall-cmd --reload
+firewall-cmd --list-all
 ```

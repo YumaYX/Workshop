@@ -6,6 +6,9 @@ layout: post
 
 # Networking
 
+- `enp0s`は、ネットワークインタフェース
+  - 環境によって異なる
+
 ## Dynamic
 
 ```sh

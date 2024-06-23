@@ -23,7 +23,7 @@ usermod -aG libvirt ${user}
 su - ${user}
 ```
 
-# install plugin for libvirt
+# Install plugin for libvirt
 
 ```sh
 vagrant plugin install vagrant-libvirt

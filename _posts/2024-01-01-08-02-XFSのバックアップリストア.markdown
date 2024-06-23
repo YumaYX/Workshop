@@ -177,7 +177,7 @@ lvmdevices --adddev /dev/sda3
 y
 ```
 
-# ref
+# Ref.
 
 - <https://chidipy.jpn.com/server/other/xfs_efi_backuprestore.html>
 - <https://qiita.com/ksota/items/a7efc598ec31c611a4d1>

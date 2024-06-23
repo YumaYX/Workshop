@@ -30,16 +30,18 @@ dnf -y install nfs-utils firewalld
 nfs_dir=/nfs
 mkdir -p ${nfs_dir}
 echo "${nfs_dir} 192.168.100.0/24(rw,no_root_squash)" > /etc/exports
-#echo "${nfs_dir} *(rw,no_root_squash)" > /etc/exports
+# echo "${nfs_dir} *(rw,no_root_squash)" > /etc/exports
+
 exportfs -ra
+
 systemctl enable --now rpcbind nfs-server firewalld
 firewall-cmd --add-service=nfs --permanent
 firewall-cmd --reload
 ```
 
 # Install Relax-and-Recover :1
-```sh
 
+```sh
 dnf -y update
 dnf -y install rear grub2-efi-x64-modules
 

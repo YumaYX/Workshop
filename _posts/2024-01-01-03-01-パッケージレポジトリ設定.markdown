@@ -6,6 +6,10 @@ layout: post
 
 # AlmaLinuxのパッケージレポジトリ設定
 
+- 既存のパッケージレポジトリ参照先を退避させる
+- インストールメディアのマウント先を参照先とする
+- /mediaにマウントする。
+
 ```sh
 mkdir /root/repos
 mv /etc/yum.repos.d/* /root/repos
@@ -28,8 +32,9 @@ DVDREPO
 
 cat <<DVDMOUNT > dvd_mount.sh
 mount /dev/cdrom /media
-# mount -o loop AlmaLinux-9.4-x86_64-dvd.iso /media
+# mount -o loop /tmp/AlmaLinux-9.4-x86_64-dvd.iso /media
 DVDMOUNT
+
 sh dvd_mount.sh
 ```
 
@@ -39,9 +44,19 @@ sh dvd_mount.sh
 mount -o loop AlmaLinux-9.4-x86_64-dvd.iso /media
 ```
 
+## ダウンロード
+
+```sh
+curl -O https://ftp.riken.jp/Linux/almalinux/9.4/isos/x86_64/AlmaLinux-9.4-x86_64-dvd.iso
+```
+
 # 元に戻す
 
 ```sh
 \cp -fpv /root/repos/* /etc/yum.repos.d/
-rm -f /etc/yum.repos.d/dvd.repo
+rm -i /etc/yum.repos.d/dvd.repo
 ```
+
+#### Ref.
+
+<https://ftp.riken.jp/Linux/almalinux/>
