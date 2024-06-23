@@ -6,23 +6,20 @@ layout: post
 
 # Install kvm:libvirt, Vagrant
 
+as root
+
 ```sh
-# as root
-## kvm
-dnf -y install qemu-kvm libvirt virt-install
+# kvm
+dnf -y install qemu-kvm libvirt virt-install libvirt-devel
 systemctl enable --now libvirtd
 
-## vagrant
+# vagrant
 yum install -y yum-utils
 yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
 yum -y install vagrant
 
-dnf -y install libvirt-devel
-
 user=user
-
 usermod -aG libvirt ${user}
-
 su - ${user}
 ```
 
@@ -42,8 +39,8 @@ cat <<'VEOF' > Vagrantfile
 Vagrant.configure('2') do |config|
   config.vm.box = 'almalinux/9'
   config.vm.provider 'libvirt' do |vb|
-    vb.memory = 768
-    vb.cpus = 1
+    vb.memory = 2048
+    vb.cpus = 2
   end
 end
 VEOF
