@@ -19,9 +19,8 @@ chage -l ${username}
 
 ```sh
 chage -l ${username}
+# オプションはL(エル)の小文字
 ```
-
-オプションはL(エル)の小文字
 
 # 引数表 passwd / chage
 

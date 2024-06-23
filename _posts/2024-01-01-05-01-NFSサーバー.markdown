@@ -2,7 +2,7 @@
 layout: post
 ---
 
-NFSサーバを構築する。ネットワークを通して、ファイル共有をする。
+NFSサーバーを構築する。ネットワークを通して、ファイル共有をする。
 
 ```sh
 dnf -y update
@@ -12,9 +12,16 @@ nfs_dir=/nfs
 mkdir -p ${nfs_dir}
 echo "${nfs_dir} 192.168.100.0/24(rw,no_root_squash)" > /etc/exports
 #echo "${nfs_dir} *(rw,no_root_squash)" > /etc/exports
+
 exportfs -ra
+
 systemctl enable --now rpcbind nfs-server firewalld
 firewall-cmd --add-service=nfs --permanent
 firewall-cmd --reload
 ```
 
+## NFSマウント
+
+```sh
+mount -t nfs <NFSサーバーIPアドレス>:/nfs /media
+```

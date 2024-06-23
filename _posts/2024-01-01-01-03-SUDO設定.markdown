@@ -7,12 +7,12 @@ sudoコマンドを使えるようにする。
 # sudoers
 
 ```sh
-user_name="user"
-echo "${user_name} ALL=(ALL) ALL" > /etc/sudoers.d/${user_name}
+user="user"
+echo "${user} ALL=(ALL) ALL" > /etc/sudoers.d/${user}
 ```
 
 ## パスワードなし
 
 ```sh
-echo "${user_name} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${user_name}
+echo "${user} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${user}
 ```

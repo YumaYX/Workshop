@@ -11,14 +11,14 @@ mkdir /root/repos
 mv /etc/yum.repos.d/* /root/repos
 
 cat <<DVDREPO >/etc/yum.repos.d/dvd.repo
-[DVD-REPO]
+[BaseOS]
 name=DVD-BaseOS
 baseurl=file:///media/BaseOS/
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-9
 
-[DVD-REPO2]
+[AppStream]
 name=DVD-AppStream
 baseurl=file:///media/AppStream/
 enabled=1
@@ -26,10 +26,17 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-9
 DVDREPO
 
-cat <<DVDMOUNT >dvd_mount.sh
+cat <<DVDMOUNT > dvd_mount.sh
 mount /dev/cdrom /media
+# mount -o loop AlmaLinux-9.4-x86_64-dvd.iso /media
 DVDMOUNT
 sh dvd_mount.sh
+```
+
+## ISOマウント
+
+```sh
+mount -o loop AlmaLinux-9.4-x86_64-dvd.iso /media
 ```
 
 # 元に戻す

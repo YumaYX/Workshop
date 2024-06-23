@@ -4,18 +4,22 @@ layout: post
 
 グループとユーザーを作成する。
 
-# group作成
+# グループ作成
+
+- GID:1234
+- group name: mygroup
 
 ```sh
 groupadd -g 1234 mygroup
 ```
 
-- GID:1234
+# ユーザー作成
+
+## 一般ログインユーザー
+
+- user name: myuser
 - group name: mygroup
-
-# user作成
-
-## 通常ログインユーザー
+- uid: 1234
 
 ```sh
 useradd -m -u 1234 myuser -g mygroup
@@ -23,14 +27,17 @@ useradd -m -u 1234 myuser -g mygroup
 
 ## ログインなしユーザー
 
+- user name: myuser
+- uid: 1234
+
 ```sh
 useradd -M -s /sbin/nologin -u 1234 myuser -g mygroup
 ```
 
-- user name: myuser
-- uid: 1234
+# ユーザー追加
 
-# user追加
+- group name: mygroup
+- user name: myuser
 
 ```sh
 usermod -aG mygroup myuser

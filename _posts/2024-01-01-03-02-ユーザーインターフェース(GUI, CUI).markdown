@@ -6,7 +6,7 @@ layout: post
 
 # GUI環境
 
-Server with GUIをサーバーグループをインストール
+Server with GUIをサーバーグループでインストールする。
 
 ```sh
 dnf -y update
@@ -24,7 +24,7 @@ LANG=C xdg-user-dirs-gtk-update
 
 ## GUI設定
 
-システムがグラフィカルモードで起動するように設定
+打鍵後、次回の起動時に、グラフィカルモードで起動する
 
 ```sh
 sudo systemctl set-default graphical.target
@@ -32,7 +32,7 @@ sudo systemctl set-default graphical.target
 
 ## CUI設定
 
-実行して、システムは再起動するか、または次回の起動時にマルチユーザーモードで起動する
+打鍵後、次回の起動時に、マルチユーザーモードで起動する
 
 ```sh
 sudo systemctl set-default multi-user.target

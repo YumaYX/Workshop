@@ -6,12 +6,11 @@ firewalldを使って、ファイアーウォールを設定する。
 
 # Firewalld
 
-## install
+## Install
 
 ```sh
 dnf -y install firewalld
-systemctl enable firewalld
-systemctl start firewalld
+systemctl enable --now firewalld
 ```
 
 ## Check
