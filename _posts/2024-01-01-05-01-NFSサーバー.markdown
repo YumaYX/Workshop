@@ -4,6 +4,9 @@ layout: post
 
 NFSサーバーを構築する。ネットワークを通して、ファイル共有をする。
 
+- 192.168.100.0/24のネットワークからの接続を許可する
+  - すべての接続を許可する場合はアスタリスク
+
 ```sh
 dnf -y update
 dnf -y install nfs-utils firewalld
@@ -11,7 +14,7 @@ dnf -y install nfs-utils firewalld
 nfs_dir=/nfs
 mkdir -p ${nfs_dir}
 echo "${nfs_dir} 192.168.100.0/24(rw,no_root_squash)" > /etc/exports
-#echo "${nfs_dir} *(rw,no_root_squash)" > /etc/exports
+# echo "${nfs_dir} *(rw,no_root_squash)" > /etc/exports
 
 exportfs -ra
 
