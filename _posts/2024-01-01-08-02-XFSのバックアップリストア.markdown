@@ -2,4 +2,186 @@
 layout: post
 ---
 
+xfsファイルシステムのサーバーバックアップ・リストアをする。
+
+# Linux環境のバックアップとリストア(xfs)
+
+## バックアップ、リストアの概要
+
+1. NFSサーバを構築
+1. オリジナルにて、NFSサーバのマウント
+1. オリジナルにて、バックアップ。マウント先に保存（バックアップ）
+1. 新しい環境にて、NFSサーバをマウント
+1. 新しい環境にて、ディスクパーティション作成
+1. 新しい環境にて、ディスクにバックアップを流し込む（リストア）
+1. ブートマネージャーでディスクを指定
+1. リブート
+
+- 足りないパッケージはインターネット経由または、DVDからインストールする。
+
+# Env
+
+- UEFI
+- XFS File System
+- Rocky Linux(Blue Onyx)
+
+## Network
+
+- 192.168.255.
+  1. Host(Mac)
+  1. NFS Server
+  1. Original
+
+## Original
+
+- /dev/sda
+
+# NFS Server(2)
+
+```sh
+sudo yum -y update
+sudo yum -y install nfs-utils firewalld
+sudo echo '/nfs 192.168.255.0/24(rw,no_root_squash)' > /etc/exports
+sudo mkdir -p /nfs
+sudo systemctl start rpcbind nfs-server firewalld
+sudo systemctl enable rpcbind nfs-server firewalld
+sudo firewall-cmd --add-service=nfs --permanent
+sudo firewall-cmd --reload
+```
+
+# Backup(3)
+
+```sh
+bkdir='/backup'
+mkdir -p "${bkdir}"
+
+# Mount NFS
+yum -y install nfs-utils
+mount -t nfs 192.168.255.2:/nfs "${bkdir}"
+
+# Backup /boot/efi
+yum -y install tar
+sync
+tar cf "${bkdir}"/boot_efi.tar -C /boot ./efi
+
+# XFS FileSystem
+yum -y install xfsdump
+# VG Name
+vgname='rl'
+
+# Backup Partition
+gdisk -l /dev/sda > "${bkdir}/gdisk-l.txt"
+df > "${bkdir}/df.txt"
+cat /etc/fstab > "${bkdir}/fs.txt"
+
+yum -y install lvm2
+pvdisplay > "${bkdir}/lv-l.txt"
+vgdisplay > "${bkdir}/vg.txt"
+lvdisplay > "${bkdir}/vp.txt"
+mount > "${bkdir}/mount.txt"
+
+blkid > "${bkdir}/blkid.txt"
+vgcfgbackup ${vgname} -f "${bkdir}"/vgcfgbackup_"${vgname}".cfg
+
+ip a > "${bkdir}/ip-a.txt"
+
+sync;xfsdump -l0 - /boot | gzip -c > "${bkdir}"/sda2.dump
+sync;xfsdump -l0 - / | gzip -c > "${bkdir}"/root.dump
+```
+
+# Restore(N)
+
+DVDからブートする。TroubleShooting -> Rescue。
+
+```sh
+## Japanese keyboard setting
+# localectl set-keymap jp106
+
+ip a
+ifconfig enp0s3 192.168.255.10/24
+# nfs mount
+mkdir /backup
+mount -t nfs 192.168.255.2:/nfs /backup
+
+sh /backup/restore.sh
+```
+
+## restore.sh
+
+```sh
+#!/bin/sh
+
+# /dev/sda1
+sda1_uuid='5A6D-1C27'
+# /dev/sda2:
+sda2_uuid='654d3546-4186-44a6-b812-92435c3d1377'
+# /dev/sda3:
+sda3_uuid='0qyHuR-kuZJ-t6EV-xe0c-cSx5-uFUF-xTnALt'
+
+# Initial Disk
+shred -vz -n 0 /dev/sda
+
+# Disk Partition
+parted -s /dev/sda mklabel gpt
+parted -s /dev/sda unit s
+parted -s /dev/sda 'mkpart "EFI System Partition" fat16 2048s 1230847s'
+parted -s /dev/sda set 1 boot on
+parted -s /dev/sda 'mkpart primary 1230848s 3327999s'
+parted -s /dev/sda 'mkpart primary 3328000s 41940991s'
+parted -s /dev/sda set 3 lvm on
+parted -l /dev/sda
+
+bkdir='/backup'
+rtdir='/restore'
+mkdir -p ${bkdir} ${rtdir}
+vgname='rl'
+
+# FileSystem
+mkfs.xfs /dev/sda2
+xfs_admin -U ${sda2_uuid} /dev/sda2
+
+mkdir ${rtdir}/boot
+mount -t xfs /dev/sda2 ${rtdir}/boot
+zcat "${bkdir}/sda2.dump" | xfsrestore -F - ${rtdir}/boot
+sync
+
+# PV and VG
+pvcreate -u ${sda3_uuid} --restorefile "${bkdir}"/vgcfgbackup_"${vgname}".cfg /dev/sda3
+vgcfgrestore -f "${bkdir}"/vgcfgbackup_"${vgname}".cfg "${vgname}"
+
+# Active VG
+vgchange -ay
+
+# LV and SWAP
+mkfs.xfs /dev/mapper/${vgname}-root
+mkswap /dev/mapper/${vgname}-swap
+
+# Restore FS
+mkdir ${rtdir}/${vgname}-root
+mount -t xfs /dev/mapper/${vgname}-root ${rtdir}/${vgname}-root
+zcat "${bkdir}/root.dump" | xfsrestore -F - ${rtdir}/${vgname}-root
+sync
+
+# Restore /boot/efi
+mkdosfs -i $(echo ${sda1_uuid} | sed 's/-//') /dev/sda1
+mkdir -p "${rtdir}/boot/efi"
+mount -t vfat /dev/sda1 ${rtdir}/boot/efi
+cd "${rtdir}/boot"
+tar xf ${bkdir}/boot_efi.tar
+
+efibootmgr -c -d /dev/sda -p 1 -l '\EFI\rocky\shimx64.efi' -L 'Restored Rocky Linux'
+sync;sync;sync
+```
+
+```sh
+# boot後
+lvmdevices --adddev /dev/sda3
+y
+```
+
+# ref
+
+- <https://chidipy.jpn.com/server/other/xfs_efi_backuprestore.html>
+- <https://qiita.com/ksota/items/a7efc598ec31c611a4d1>
+- <https://blue-red.ddo.jp/~ao/wiki/wiki.cgi?page=%A5%B7%A5%B9%A5%C6%A5%E0%A5%D0%A5%C3%A5%AF%A5%A2%A5%C3%A5%D7+XFS>
 
