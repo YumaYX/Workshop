@@ -11,6 +11,11 @@ pub:
 	git commit -am 'update'
 	git push
 
+com:
+	git status
+	sleep 5
+	git commit -am 'update'
+
 port:
 	sudo dnf -y install firewalld
 	sudo systemctl restart firewalld
