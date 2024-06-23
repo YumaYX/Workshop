@@ -8,7 +8,9 @@ layout: post
 
 ```sh
 username='user'
+```
 
+```sh
 passwd -n 0 ${username}
 passwd -x 99999 ${username}
 passwd -w -1 ${username}
