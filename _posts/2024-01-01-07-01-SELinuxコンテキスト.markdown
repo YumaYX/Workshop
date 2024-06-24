@@ -35,6 +35,8 @@ unconfined_u:object_r:samba_share_t:s0 file1
 
 ## chconを戻す場合
 
+`restorecon -v file_name`
+
 ```sh
 [vagrant@localhost ~]$ restorecon -v file1
 Relabeled /home/vagrant/file1 from unconfined_u:object_r:samba_share_t:s0 to unconfined_u:object_r:user_home_t:s0
