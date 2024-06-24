@@ -7,3 +7,6 @@ title: AlmaLinux
 
 基本的には、`AlmaLinux 9`を使用して、検証を行なっている。一部検証は`Rocky Linux 9`を使用している。
 
+
+- <https://almalinux.org/>
+- <https://rockylinux.org/>
