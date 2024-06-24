@@ -32,6 +32,8 @@ vagrant plugin install vagrant-libvirt
 
 ### Boot Virtual Machine
 
+- <https://app.vagrantup.com/almalinux/boxes/9>
+
 ```sh
 mkdir vmmachine && cat <<'VEOF' > vmmachine/Vagrantfile
 # -*- mode: ruby -*-
