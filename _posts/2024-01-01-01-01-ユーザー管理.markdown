@@ -35,7 +35,7 @@ useradd -m -u 1234 myuser -g mygroup
 useradd -M -s /sbin/nologin -u 1234 myuser -g mygroup
 ```
 
-# ユーザー追加
+# グループへのユーザー追加
 
 - group name: mygroup
 - user name: myuser
