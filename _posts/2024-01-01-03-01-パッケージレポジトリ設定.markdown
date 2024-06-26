@@ -39,19 +39,19 @@ DVDMOUNT
 sh dvd_mount.sh
 ```
 
-## ISOマウント
+## ISOファイルマウント
 
 ```sh
 mount -o loop AlmaLinux-9.4-x86_64-dvd.iso /media
 ```
 
-## ダウンロード
+## ISOファイルダウンロード
 
 ```sh
 curl -O https://ftp.riken.jp/Linux/almalinux/9.4/isos/x86_64/AlmaLinux-9.4-x86_64-dvd.iso
 ```
 
-# 元に戻す
+# レポジトリ参照先を元に戻す場合
 
 ```sh
 \cp -fpv /root/repos/* /etc/yum.repos.d/
