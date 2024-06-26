@@ -7,7 +7,7 @@ title: ユーザ管理
 
 # グループ作成
 
-- GID:1234
+- gid:1234
 - group name: mygroup
 
 ```sh
