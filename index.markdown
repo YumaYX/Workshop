@@ -5,6 +5,8 @@
 layout: default
 ---
 
+Red Hat Enterprise Linux派生のディストリビューションを使用した検証の記録とコマンド、設定集である。
+
 {% for post in site.posts reversed %}
   <h2><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
   <p>{{ post.excerpt | markdownify }}</p>
