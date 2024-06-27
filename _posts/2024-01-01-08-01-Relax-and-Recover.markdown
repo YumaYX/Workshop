@@ -20,7 +20,7 @@ Relax-and-Recoverを用いて、サーバーバックアップ・リストアを
     - 公開ディレクトリは/nfs
     - 192.168.100.0/24からのアクセスを許可
 
-# Install NFS Server :2
+# Install NFS Server :.2
 
 NFSサーバーを構築する。
 
@@ -40,7 +40,7 @@ firewall-cmd --add-service=nfs --permanent
 firewall-cmd --reload
 ```
 
-# Install Relax-and-Recover :1
+# Install Relax-and-Recover :.1
 
 ```sh
 dnf -y update
@@ -79,7 +79,7 @@ echo 'USING_UEFI_BOOTLOADER=1' >> /etc/rear/local.conf
 
 /media、/vat/tmp、/var/crash、/kdumpは、バックアップ対象から外す。
 
-# Backup :1
+# Backup :.1
 
 ```sh
 rear -v mkbackup
