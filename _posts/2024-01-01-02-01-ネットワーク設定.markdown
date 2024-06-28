@@ -42,3 +42,10 @@ nmcli c mod $c ipv6.method disabled
 nmcli c mod $c connection.autoconnect yes
 nmcli c up $c
 ```
+
+## hostname
+
+```sh
+hostnamectl set-hostname <hostname>
+```
+
