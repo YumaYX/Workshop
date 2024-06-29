@@ -1,0 +1,72 @@
+---
+layout: post
+title: NTPサーバー(Chrony)
+---
+
+NTPサーバーを構築する。
+
+# 何ができるか？
+
+
+# 想定環境
+
+- Server：192.168.123.2
+- Client：192.168.123.3
+- NTPサーバー問い合わせ先：ntp1.sakura.ad.jp
+
+# Build NTP Server:.2
+
+```sh
+dnf -y install firewalld
+systemctl enable --now firewalld
+firewall-cmd --permanent --zone=public --add-service=ntp
+firewall-cmd --reload
+
+dnf -y install chrony
+
+sed -i 's/^pool /#pool /' /etc/chrony.conf
+grep sakura /etc/chrony.conf || echo 'server ntp1.sakura.ad.jp iburst' >> /etc/chrony.conf
+grep '192.168.123.0' /etc/chrony.conf || echo 'allow 192.168.123.0/24' >> /etc/chrony.conf
+
+systemctl enable --now chronyd
+systemctl restart chronyd
+
+chronyc -a makestep
+# wait
+chronyc sources
+
+timedatectl set-local-rtc 0
+timedatectl
+```
+
+# Build NTP Client:.3
+
+
+```sh
+dnf -y install chrony
+
+sed -i 's/^pool /#pool /' /etc/chrony.conf
+grep '192.168.123.2' /etc/chrony.conf || echo 'server 192.168.123.2 iburst' >> /etc/chrony.conf
+
+systemctl enable --now chronyd
+systemctl restart chronyd
+
+chronyc -a makestep
+# wait
+chronyc sources
+
+timedatectl set-local-rtc 0
+timedatectl
+```
+
+## chronyc sources
+
+- <https://qiita.com/yunano/items/7883cf295f91f4ef716b>
+
+> M
+> 問い合わせ先の種類。"^"はサーバ、"="はピア、"#"はローカルのハードウェアクロック
+> 
+> S
+> 現在の状態。代表的なものを挙げると、"\*"は同期対象として採用中、"+"は同期対象候補、"-"はアルゴリズムにより同期対象から外れているもの
+
+Sが?は、同期されていない。
