@@ -63,7 +63,7 @@ timedatectl set-timezone Asia/Tokyo
 timedatectl
 ```
 
-## chronyc sources
+## # chronyc sources
 
 - <https://qiita.com/yunano/items/7883cf295f91f4ef716b>
 
