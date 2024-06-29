@@ -35,7 +35,9 @@ chronyc -a makestep
 # wait
 chronyc sources
 
+timedatectl set-ntp 1
 timedatectl set-local-rtc 0
+timedatectl set-timezone Asia/Tokyo
 timedatectl
 ```
 
@@ -55,7 +57,9 @@ chronyc -a makestep
 # wait
 chronyc sources
 
+timedatectl set-ntp 1
 timedatectl set-local-rtc 0
+timedatectl set-timezone Asia/Tokyo
 timedatectl
 ```
 
