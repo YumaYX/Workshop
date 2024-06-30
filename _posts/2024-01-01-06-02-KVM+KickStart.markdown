@@ -1,0 +1,56 @@
+---
+layout: post
+title: "KVM+KickStart"
+---
+
+KickStartを使って、KVMの仮想マシンをインストールする。
+
+- Linux KVMならvdaを指定する。
+
+```sh
+virsh shutdown guest1-rhel9
+virsh destroy guest1-rhel9
+virsh undefine guest1-rhel9 --remove-all-storage
+```
+
+```sh
+cat << 'KICKSTART' > /tmp/ks.cfg
+text
+reboot
+cdrom
+
+keyboard --vckeymap=jp106 --xlayouts='jp','us'
+# keyboard --vckeymap=us --xlayouts='us','jp'
+lang en_US.UTF-8
+
+network --bootproto=dhcp --ipv6=auto --activate --hostname=localhost
+zerombr
+
+%packages
+@core
+%end
+
+ignoredisk --only-use=vda
+autopart
+clearpart --all --initlabel
+
+timezone Asia/Tokyo --utc
+
+rootpw --iscrypted --allow-ssh $6$EkGHWaJKwbybILqx$DwIwbw5NOGm2LpNlaCIRCeckcOlHACxMMfsyYijZ0uEKmGTHmDSqQhs4ndUGpme5uZl7zg/aJyam8j9N6wWRG.
+KICKSTART
+```
+
+```sh
+virt-install \
+--name guest1-rhel9 \
+--memory 2048 \
+--vcpus 2 \
+--network default \
+--disk size=20 \
+--location /tmp/AlmaLinux-9.4-x86_64-minimal.iso \
+--os-variant rhel9.4 \
+--graphics none \
+--accelerate \
+--initrd-inject /tmp/ks.cfg \
+--extra-args "console=tty0 console=ttyS0,115200n8 inst.ks=file:/ks.cfg"
+```
