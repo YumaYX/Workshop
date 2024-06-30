@@ -5,13 +5,17 @@ title: "KVM+KickStart"
 
 KickStartを使って、KVMの仮想マシンをインストールする。
 
-- Linux KVMならvdaを指定する。
+### 仮想マシンがある場合、削除
 
 ```sh
 virsh shutdown guest1-rhel9
 virsh destroy guest1-rhel9
 virsh undefine guest1-rhel9 --remove-all-storage
 ```
+
+# kickstartコンフィグファイルの作成
+
+Linux KVMならvdaを指定する。
 
 ```sh
 cat << 'KICKSTART' > /tmp/ks.cfg
@@ -39,6 +43,10 @@ timezone Asia/Tokyo --utc
 rootpw --iscrypted --allow-ssh $6$EkGHWaJKwbybILqx$DwIwbw5NOGm2LpNlaCIRCeckcOlHACxMMfsyYijZ0uEKmGTHmDSqQhs4ndUGpme5uZl7zg/aJyam8j9N6wWRG.
 KICKSTART
 ```
+
+# インストール実施
+
+待つだけ。
 
 ```sh
 virt-install \
