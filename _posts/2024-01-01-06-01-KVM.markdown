@@ -1,0 +1,68 @@
+---
+layout: post
+title: KVM
+---
+
+KVMを使って、仮想マシンをブートする。
+
+# kvm:libvirtのインストール
+
+as root
+
+```sh
+dnf -y install qemu-kvm libvirt virt-install libvirt-devel
+systemctl enable --now libvirtd
+```
+
+# install guest
+
+as root
+
+```sh
+# as root
+virt-install \
+--name guest1-rhel9 \
+--memory 2048 \
+--vcpus 2 \
+--network default \
+--disk size=20 \
+--cdrom /tmp/AlmaLinux-9.4-x86_64-minimal.iso \
+--os-variant rhel9.4
+```
+
+# list
+
+```sh
+virsh list --all
+```
+
+# stop
+
+```sh
+virsh shutdown guest1-rhel9
+```
+
+or
+
+```sh
+virsh destroy guest1-rhel9
+```
+
+# delete
+
+```sh
+virsh undefine guest1-rhel9 --remove-all-storage
+```
+
+# start
+
+```sh
+virsh start guest1-rhel9
+```
+
+
+#### Ref.
+
+- <https://docs.redhat.com/ja/documentation/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-virsh-delete>
+- <https://qiita.com/TsutomuNakamura/items/22d9d2629a8eb9360865>
+
