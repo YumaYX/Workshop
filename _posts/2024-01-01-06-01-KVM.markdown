@@ -14,7 +14,7 @@ dnf -y install qemu-kvm libvirt virt-install libvirt-devel
 systemctl enable --now libvirtd
 ```
 
-# install guest
+# 仮想マシンのインストール
 
 as root
 
@@ -30,36 +30,35 @@ virt-install \
 --os-variant rhel9.4
 ```
 
-# list
+# 仮想マシンのリスト
 
 ```sh
 virsh list --all
 ```
 
-# stop
+# 仮想マシンのシャットダウン
 
 ```sh
 virsh shutdown guest1-rhel9
 ```
 
-or
+# 仮想マシンの強制終了
 
 ```sh
 virsh destroy guest1-rhel9
 ```
 
-# delete
+# 仮想マシンの削除
 
 ```sh
 virsh undefine guest1-rhel9 --remove-all-storage
 ```
 
-# start
+# 仮想マシンの電源オン
 
 ```sh
 virsh start guest1-rhel9
 ```
-
 
 #### Ref.
 
