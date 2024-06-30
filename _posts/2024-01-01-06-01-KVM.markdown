@@ -30,7 +30,9 @@ virt-install \
 --os-variant rhel9.4 \
 --graphics none \
 --extra-args "console=tty0 console=ttyS0,115200n8"
+```
 
+```sh
 virsh console guest1-rhel9
 ```
 
