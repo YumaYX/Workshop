@@ -27,7 +27,11 @@ virt-install \
 --network default \
 --disk size=20 \
 --cdrom /tmp/AlmaLinux-9.4-x86_64-minimal.iso \
---os-variant rhel9.4
+--os-variant rhel9.4 \
+--graphics none \
+--extra-args "console=tty0 console=ttyS0,115200n8"
+
+virsh console guest1-rhel9
 ```
 
 # 仮想マシンのリスト
