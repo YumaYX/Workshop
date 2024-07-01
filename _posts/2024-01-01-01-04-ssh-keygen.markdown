@@ -13,20 +13,20 @@ title: "SSHのための鍵作成"
 # 鍵ペアの作成
 
 ```sh
-ssh-keygen -t rsa -b 4096
+ssh-keygen -t ed25519
 ```
 
 # 鍵の登録と権限変更
 
 ```sh
-ls -ld ~/.ssh/id_rsa
+ls -ld ~/.ssh/id_*
 
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 ```
 
 # SSHする前に
 
 ```sh
-chmod 600 ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_ed25519
 ```
