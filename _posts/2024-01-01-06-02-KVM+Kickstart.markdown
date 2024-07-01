@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "KVM+KickStart"
+title: "KVM+Kickstart"
 ---
 
-KickStartを使って、KVMの仮想マシンをインストールする。
+Kickstartを使って、KVMの仮想マシンをインストールする。
 
 ### 仮想マシンがある場合、削除
 
@@ -13,7 +13,7 @@ virsh destroy guest1-rhel9
 virsh undefine guest1-rhel9 --remove-all-storage
 ```
 
-# kickstartコンフィグファイルの作成
+# Kickstartコンフィグファイルの作成
 
 Linux KVMならvdaを指定する。
 
