@@ -14,6 +14,11 @@ dnf -y install qemu-kvm libvirt virt-install libvirt-devel
 systemctl enable --now libvirtd
 ```
 
+```sh
+# virt manager
+dnf -y install virt-manager
+```
+
 # 仮想マシンのインストール
 
 as root
