@@ -7,12 +7,16 @@ sudoコマンドを使えるようにする。
 
 # sudoers
 
+/etc/sudoers.d/下にファイルを作成し、sudoersの設定を記載することで、特定のユーザーに、sudoの権限が付与できる。
+
 ```sh
 user="user"
 echo "${user} ALL=(ALL) ALL" > /etc/sudoers.d/${user}
 ```
 
 ## パスワードなし
+
+上の方法は、sudo初回打鍵時、パスワードを求められるが、以下の方法で設定することにより、パスワードを求められなくなる。
 
 ```sh
 echo "${user} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${user}

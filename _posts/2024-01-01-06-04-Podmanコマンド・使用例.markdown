@@ -5,6 +5,13 @@ title: "Podmanコマンド・使用例"
 
 コンテナの操作コマンドと使用例を紹介する。
 
+# Install Podman
+
+```sh
+dnf -y update
+dnf -y install podman podman-docker
+```
+
 # 操作
 
 ## Container
@@ -150,13 +157,6 @@ podman run \
 - <https://non-filtered-worklog.hateblo.jp/entry/2021/06/15/230119>
 
 ---
-
-# Install Podman
-
-```sh
-dnf -y update
-dnf -y install podman podman-docker
-```
 
 # Environments
 

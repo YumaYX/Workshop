@@ -7,7 +7,7 @@ title: ユーザーインターフェース(GUI, CUI)
 
 # GUI環境
 
-Server with GUIをサーバーグループでインストールする。
+`Server with GUI`をサーバーグループでインストールする。
 
 ```sh
 dnf -y update
