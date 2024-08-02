@@ -1,6 +1,6 @@
 ---
 layout: post
-title: AlmaLinux
+title: "概要と目的"
 ---
 
 本プロジェクトについて
