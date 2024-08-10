@@ -9,6 +9,6 @@ layout: default
 
 {% for post in site.posts reversed %}
   <h2><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
-  <p>{{ post.excerpt | markdownify }}</p>
+  {{ post.excerpt | markdownify }}
 {% endfor %}
 
