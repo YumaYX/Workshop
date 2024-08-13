@@ -12,3 +12,10 @@ layout: default
   {{ post.excerpt | markdownify }}
 {% endfor %}
 
+---
+
+### 本サイトの一括ダウンロード
+
+```sh
+wget -pkr -l1 -w3 --random-wait https://yumayx.github.io/Workshop/
+```
