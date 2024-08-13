@@ -37,3 +37,9 @@ AlmaLinuxで頻繁に使用されるコマンドや操作をまとめたチー�
 
 - <https://almalinux.org/>
 - <https://rockylinux.org/>
+
+### 本サイトの一括ダウンロード
+
+```sh
+wget -pkr -l1 -w3 --random-wait https://yumayx.github.io/Workshop/
+```

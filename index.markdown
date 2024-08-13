@@ -11,11 +11,3 @@ layout: default
   <h2><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
   {{ post.excerpt | markdownify }}
 {% endfor %}
-
----
-
-### 本サイトの一括ダウンロード
-
-```sh
-wget -pkr -l1 -w3 --random-wait https://yumayx.github.io/Workshop/
-```
