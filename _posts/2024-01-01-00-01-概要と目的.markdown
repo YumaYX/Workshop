@@ -36,10 +36,14 @@ AlmaLinuxで頻繁に使用されるコマンドや操作をまとめたチー�
 
 # AlmaLinux / Rocky Linux
 
+公式サイトを記載する。
+
 - <https://almalinux.org/>
 - <https://rockylinux.org/>
 
 # 本サイトの一括ダウンロード
+
+`wget`を使用して、本サイトを丸ごとダウンロードできる。オフライン環境でも閲覧可能である。
 
 ```sh
 wget -pkr -l1 -w3 --random-wait https://yumayx.github.io/Workshop/
