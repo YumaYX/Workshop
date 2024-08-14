@@ -1,6 +1,7 @@
 ---
 layout: post
 title: KVM+Vagrant
+category: "仮想化"
 ---
 
 KVMをVagrantを使って、仮想マシンをブートする。

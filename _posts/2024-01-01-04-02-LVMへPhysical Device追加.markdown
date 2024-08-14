@@ -1,6 +1,7 @@
 ---
 layout: post
 title: LVMへPhysical Device追加
+category: "ディスク"
 ---
 
 Logical Volume(マウントポイント)の領域を新規に追加したディスクを使って拡張する。

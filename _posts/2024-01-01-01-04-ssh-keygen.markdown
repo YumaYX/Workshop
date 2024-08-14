@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "SSHのための鍵作成"
+category: "ユーザー管理"
 ---
 
 鍵ペアを作成する。

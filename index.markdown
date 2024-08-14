@@ -7,7 +7,13 @@ layout: default
 
 本プロジェクトは、Red Hat Enterprise Linux派生のディストリビューションを使用した検証の記録である。よく使うコマンドや設定集を紹介する。
 
+
+{% for category in  site.categories %}
+## {{ forloop.index }} {{ category[0] }}
 {% for post in site.posts reversed %}
-  <h2><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
-  {{ post.excerpt | markdownify }}
+{% if post.category == category[0] %}
+1. [{{ index }} {{ post.title }}]({{ site.baseurl }}{{ post.url }})
+    {{ post.excerpt | markdownify }}
+{% endif %}
+{% endfor %}
 {% endfor %}

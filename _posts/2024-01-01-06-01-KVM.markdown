@@ -1,6 +1,7 @@
 ---
 layout: post
 title: KVM
+category: "仮想化"
 ---
 
 KVMを使って、仮想マシンをブートする。

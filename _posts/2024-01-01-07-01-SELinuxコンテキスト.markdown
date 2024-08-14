@@ -1,6 +1,7 @@
 ---
 layout: post
 title: SELinuxコンテキスト
+category: "セキュリティ"
 ---
 
 ファイルのSELinuxコンテキストを修正する。

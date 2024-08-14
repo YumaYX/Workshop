@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Visual Studio Codeのインストール"
+category: "パッケージレポジトリ"
 ---
 
 Visual Studio Codeのインストールをインストールする。

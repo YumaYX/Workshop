@@ -1,6 +1,7 @@
 ---
 layout: post
 title: SUDO設定
+category: "ユーザー管理"
 ---
 
 sudoコマンドを使えるようにする。

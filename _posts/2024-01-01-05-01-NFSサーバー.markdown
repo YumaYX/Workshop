@@ -1,6 +1,7 @@
 ---
 layout: post
 title: NFSサーバー
+category: "各種サーバー"
 ---
 
 NFSサーバーを構築する。ネットワークを通して、ファイル共有をする。

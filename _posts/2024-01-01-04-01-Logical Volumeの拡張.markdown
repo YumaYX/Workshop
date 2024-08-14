@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Logical Volumeの拡張
+category: "ディスク"
 ---
 
 Logical Volumeを拡張する。

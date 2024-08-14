@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Sambaサーバー
+category: "各種サーバー"
 ---
 
 Sambaサーバーを構築する。ネットワークを通して、ファイル共有をする。

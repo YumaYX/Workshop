@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "KVM+Kickstart"
+category: "仮想化"
 ---
 
 Kickstartを使って、KVMの仮想マシンをインストールする。

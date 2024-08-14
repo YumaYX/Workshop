@@ -1,6 +1,7 @@
 ---
 layout: post
 title: NTPサーバー(Chrony)
+category: "各種サーバー"
 ---
 
 NTPサーバーを構築する。

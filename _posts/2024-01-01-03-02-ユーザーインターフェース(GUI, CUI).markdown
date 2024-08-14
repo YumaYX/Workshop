@@ -1,6 +1,7 @@
 ---
 layout: post
 title: ユーザーインターフェース(GUI, CUI)
+category: "パッケージレポジトリ"
 ---
 
 ユーザーインタフェースを整える。

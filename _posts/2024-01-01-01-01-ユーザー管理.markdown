@@ -1,6 +1,7 @@
 ---
 layout: post
 title: ユーザー管理
+category: "ユーザー管理"
 ---
 
 グループとユーザーを作成する。

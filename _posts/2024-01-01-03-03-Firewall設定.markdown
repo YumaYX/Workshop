@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Firewall設定
+category: "パッケージレポジトリ"
 ---
 
 firewalldを使って、ファイアウォールを設定する。
