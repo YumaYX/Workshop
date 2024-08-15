@@ -13,7 +13,6 @@ layout: default
 {% for post in site.posts reversed %}
 {% if post.category == category[0] %}
 1. [{{ index }} {{ post.title }}]({{ site.baseurl }}{{ post.url }})
-    {{ post.excerpt | markdownify }}
 {% endif %}
 {% endfor %}
 {% endfor %}
