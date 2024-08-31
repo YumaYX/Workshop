@@ -1,0 +1,328 @@
+---
+layout: post
+title: KVM+Terraform
+category: "仮想化"
+---
+
+# 何ができるか？
+
+- Linux VMのインストール、ブート
+
+# 想定環境、想定シナリオ
+
+AlmaLinuxをホストとし、仮想マシンゲストとしてAlmaLinuxをブートする。
+Terraformを使用して、Linuxを動作させる環境を作る。
+
+世間で言われている`"クラウド"`は使用せず、ローカルPC上で動作させたLinuxの中で動作させる。そのため、Terraformのプロバイダーが、`libvirt`となる。
+
+libvirt、Terraformをインストールする。Terraformを実行することで、AlmaLinuxディストリビューションのイメージをダウンロードし、そのイメージからAlmaLinuxをブートする。ブートするLinuxの初期設定は、Cloud-initにて行う。
+
+# インストール
+
+## Install Terraform
+
+```sh
+yum install -y yum-utils
+yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+yum -y install terraform
+```
+
+## Install Go Lang
+
+```sh
+dnf -y install go
+```
+
+## Install terraform-provider-libvert
+
+```sh
+git clone https://github.com/dmacvicar/terraform-provider-libvirt.git
+cd terraform-provider-libvirt && make
+```
+
+## Install KVM
+
+```sh
+dnf -y install qemu-kvm libvirt virt-install libvirt-devel virt-manager
+systemctl enable --now libvirtd
+
+virsh pool-define-as --name default --type dir --target /var/lib/libvirt/images
+virsh pool-autostart default
+virsh pool-start default
+
+systemctl restart libvirtd
+
+user=yuma
+usermod -aG libvirt ${user}
+su - ${user}
+```
+
+## インストール確認
+
+```sh
+mkdir test_tf && cd test_tf
+
+cat <<CONF > main.tf
+terraform {
+  required_version = ">= 1.9"
+  required_providers {
+    libvirt = {
+      version = ">= 0.7.6"
+      source = "dmacvicar/libvirt"
+    }
+  }
+}
+
+provider "libvirt" {
+  uri = "qemu:///system"
+}
+CONF
+
+for a in init plan apply destroy
+do
+  terraform $a
+done
+
+cd - && rm -rf test_tf
+```
+
+# コンフィグファイルの作成
+
+実行環境がインストールされたので、実際に、Terraformを動かす。本例は、[terraform-libvirt-ubuntu-examples](https://github.com/fabianlee/terraform-libvirt-ubuntu-examples)を参考に作成している。
+
+#`Makefile`の作成
+
+```sh
+cat <<'MAK' > Makefile
+PROJECT := simple
+
+apply:
+	terraform apply -auto-approve
+
+init:
+	terraform init
+
+## recreate terraform resources
+rebuild: destroy apply
+
+destroy:
+	terraform destroy -auto-approve
+
+## create public/private keypair for ssh
+create-keypair:
+	@echo "THIDIR=$(THISDIR)"
+	ssh-keygen -t rsa -b 4096 -f id_rsa -C $(PROJECT) -N "" -q
+
+metadata:
+	terraform refresh && terraform output ips
+MAK
+```
+
+#`cloud_init.cfg`の作成
+
+```sh
+cat <<'CLO' > cloud_init.cfg
+#cloud-config
+hostname: ${hostname}
+fqdn: ${fqdn}
+manage_etc_hosts: true
+
+users:
+  - name: user
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin
+    home: /home/user
+    shell: /bin/bash
+    lock_passwd: false
+    ssh-authorized-keys:
+      - ${file("id_rsa.pub")}
+
+# only cert auth via ssh (console access can still login)
+ssh_pwauth: false
+
+disable_root: false
+
+chpasswd:
+  list: |
+     user:userpassword
+  expire: False
+
+packages:
+  - qemu-guest-agent
+
+# test of writing content
+write_files:
+  - content: |
+      The quick brown fox jumped 
+      over the lazy dog
+    path: /root/test.txt
+
+# written to /var/log/cloud-init-output.log
+final_message: "The system is finally up, after $UPTIME seconds"
+CLO
+```
+
+#`network_config_dhcp.cfg`の作成
+
+```sh
+cat <<'CFG' > network_config_dhcp.cfg
+version: 2
+ethernets:
+  ens3:
+     dhcp4: true
+CFG
+```
+
+#`main.tf`の作成
+
+```sh
+cat <<'MAI' > main.tf
+# variables that can be overriden
+variable "hostname" { default = "simple" }
+variable "domain" { default = "example.com" }
+variable "memoryMB" { default = 1024*2 }
+variable "cpu" { default = 2 }
+
+# fetch the AlmaLinux release image from their mirrors
+resource "libvirt_volume" "os_image" {
+  name = "${var.hostname}-os_image"
+  pool = "default"
+  source = "https://ftp.riken.jp/Linux/almalinux/9/cloud/x86_64/images/AlmaLinux-9-GenericCloud-latest.x86_64.qcow2"
+  format = "qcow2"
+}
+
+# Use CloudInit ISO to add ssh-key to the instance
+resource "libvirt_cloudinit_disk" "commoninit" {
+          name = "${var.hostname}-commoninit.iso"
+          pool = "default"
+          user_data =      data.template_file.user_data.rendered
+          network_config = data.template_file.network_config.rendered
+}
+
+data "template_file" "user_data" {
+  template = file("${path.module}/cloud_init.cfg")
+  vars = {
+    hostname = var.hostname
+    fqdn = "${var.hostname}.${var.domain}"
+  }
+}
+
+data "template_file" "network_config" {
+  template = file("${path.module}/network_config_dhcp.cfg")
+}
+
+# Create the machine
+resource "libvirt_domain" "domain-alma" {
+  name = var.hostname
+  memory = var.memoryMB
+  vcpu = var.cpu
+
+  # to boot Almalinux 9
+  cpu {
+    mode = "host-passthrough"
+  }
+
+  disk {
+       volume_id = libvirt_volume.os_image.id
+  }
+
+  network_interface {
+       network_name = "default"
+  }
+
+  cloudinit = libvirt_cloudinit_disk.commoninit.id
+
+  console {
+    type        = "pty"
+    target_port = "0"
+    target_type = "virtio"
+  }
+
+  graphics {
+    type = "vnc"
+    listen_type = "address"
+    autoport = "true"
+  }
+}
+
+output "ips" {
+  # show IP, run 'terraform refresh' if not populated
+  value = libvirt_domain.domain-alma.*.network_interface.0.addresses
+}
+
+terraform {
+  required_version = ">= 1.9"
+  required_providers {
+    libvirt = {
+      version = ">= 0.7.6"
+      source = "dmacvicar/libvirt"
+    }
+  }
+}
+
+# instance the provider
+provider "libvirt" {
+  uri = "qemu:///system"
+}
+MAI
+```
+
+- terraformブロックを定型文ではあるが、書き換えている。
+- resource "libvirt_domain"ブロック、graphicのtypeをvncに変更している。
+- cpuについて、パススルーを追記。理由は、後述にあり。
+
+## 起動
+
+```sh
+# 初回
+make create-keypair && make init && make
+# `Failed to connect socket to '/var/run/libvirt/libvirt-sock'`のエラー出力ならホストOSの再起動を検討
+
+# または
+make
+```
+
+## Clean
+
+makefileの記述にしたがって操作する。
+
+```sh
+make destroy # terraform destroy -auto-approve
+```
+
+# try&err
+
+- `Failed to connect socket to '/var/run/libvirt/libvirt-sock'`のエラー出力。`systemctl restart libvirtd`で回復するはず。今回しなかった。OSの再起動を実施後、エラー解消された。
+- AlmaLinuxを動作させる場合、`main.tf`の`resource "libvirt_domain"`ブロックに以下記述を追記した。追記しない状態だと、起動時点でカーネルパニックで動作しなかった。
+
+  ```hcl
+    cpu {
+      mode = "host-passthrough"
+    }
+  ```
+- `Error: can't find storage pool 'default'`のエラー出力。defaultのプールが作成されていないため、エラー出力された。作成するコマンドは本稿の手順中に盛り込み済み。プールは以下のコマンドで確認できる。プール設定したユーザーで、下のコマンドを打鍵する（そうしないと出力されない）。
+  
+  ```sh
+  virsh pool-list --all
+  ```
+
+  いつもは、vagrantを使用しているため、vagrantは裏で、自動で作成している可能性がある(?)。
+
+# バージョン
+
+```
+[root@y ~]# cat /etc/redhat-release 
+AlmaLinux release 9.4 (Seafoam Ocelot)
+[root@y ~]# terraform -v
+Terraform v1.9.5
+on linux_amd64
+[root@y ~]# libvirtd --version
+libvirtd (libvirt) 10.0.0
+[root@y ~]# 
+```
+
+# Ref.
+
+- <https://developer.hashicorp.com/terraform/install>
+- <https://github.com/dmacvicar/terraform-provider-libvirt>
+- <https://repo.almalinux.org/almalinux/9/cloud/x86_64/images/>
