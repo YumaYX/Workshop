@@ -300,7 +300,7 @@ make destroy # terraform destroy -auto-approve
       mode = "host-passthrough"
     }
   ```
-  - [参考記事](https://developers.redhat.com/blog/2021/01/05/building-red-hat-enterprise-linux-9-for-the-x86-64-v2-microarchitecture-level#background_of_the_x86_64_microarchitecture_levels)のx86-64-v2に関連するものと考えられるため、変更した。
+  [参考記事](https://developers.redhat.com/blog/2021/01/05/building-red-hat-enterprise-linux-9-for-the-x86-64-v2-microarchitecture-level#background_of_the_x86_64_microarchitecture_levels)のx86-64-v2に関連するものと考えられるため、変更した。
 
 - `Error: can't find storage pool 'default'`のエラー出力。defaultのプールが作成されていないため、エラー出力された。作成するコマンドは本稿の手順中に盛り込み済み。プールは以下のコマンドで確認できる。プール設定したユーザーで、下のコマンドを打鍵する（そうしないと出力されない）。
   
