@@ -27,7 +27,7 @@ yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.
 yum -y install terraform
 ```
 
-## Install Go Lang
+## Install Go Lang for terraform-provider-libvert
 
 ```sh
 dnf -y install go
