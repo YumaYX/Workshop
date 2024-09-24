@@ -1,0 +1,60 @@
+---
+layout: post
+title: Docker+Act
+category: "仮想化"
+---
+
+# 何ができるか
+
+- ローカル環境でGitHub Actions実行
+
+## 注意点
+
+本手順では、podmanをアンインストールする手順となっている。
+
+# Dockerインストール
+
+```sh
+sudo yum remove -y docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine \
+                  podman \
+                  runc
+
+sudo yum install -y yum-utils
+sudo yum-config-manager -y --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+
+sudo yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+sudo systemctl enable --now docker
+```
+
+##### Ref.
+
+<https://docs.docker.com/engine/install/rhel/>
+
+# Actインストール
+
+sudoできるユーザーで、actをインストールする。
+
+```sh
+curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+```
+
+# Act実行
+
+```sh
+sudo ~/bin/act
+```
+
+ファイルを指定する場合は、
+
+```sh
+sudo ~/bin/act -j test -W .github/workflows/test.yml
+```
+
