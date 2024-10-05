@@ -45,6 +45,6 @@ nmcli c up $c
 # Hostname
 
 ```sh
-hostnamectl set-hostname <hostname>
+hostnamectl set-hostname --static <hostname>
 ```
 
