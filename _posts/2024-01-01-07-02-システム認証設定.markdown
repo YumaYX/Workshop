@@ -42,7 +42,6 @@ authselect create-profile "${profile_name}" --base-on sssd
 #or
 authselect create-profile "${profile_name}" -b sssd
 
-# 修正create
 # 設定ファイルの一覧
 ls -1 /etc/authselect/custom/"${profile_name}"
 
@@ -80,7 +79,9 @@ authselect test custom/"${profile_name}"
 vi "/etc/authselect/custom/${profile_name}/nsswitch.conf"
 ```
 
-## それ以外の場合
+で修正を行う。
+
+## それ以外の項目を修正する場合
 
 `/etc/authselect/`下の`nsswitch.conf`を修正する。
 
@@ -151,7 +152,7 @@ system-auth
 
 faillockの機能を有効化して、`/etc/security/faillock.conf`のパスワードミスのログインロックを実現する。
 
-本稿では、ロック、手動アンロックのみ試す。自動アンロックや、rootにも適用するかなど、設定がある。
+本稿では、ロック、手動アンロックのみを試す。他にも自動アンロックや、rootにも適用するかなど、設定がある。
 
 ```sh
 # check status
@@ -188,15 +189,15 @@ echo 'deny = 2' >> /etc/security/faillock.conf
 userdel user ; useradd user ; passwd user
 su - user
 
-su - user # miss
+su - user # incorrect
 su - user # correct password -> success
 
-su - user # miss
-su - user # miss
+su - user # incorrect
+su - user # incorrect
 su - user # correct password -> failure(locked)
 ```
 
-### 失敗状況確認、リセットコマンド
+### ログイン失敗状況確認、リセットコマンド
 
 ```sh
 # 失敗状況確認
@@ -209,8 +210,6 @@ faillock --user user --reset ; faillock --user user
 # パスワード制限
 
 代表的な制限を取り扱うが、詳しくは、公式や参考文献を参照すること。
-
-## 使いまわし回数制限
 
 ## 長さ制限
 
