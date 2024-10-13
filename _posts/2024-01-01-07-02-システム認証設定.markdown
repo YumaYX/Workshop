@@ -1,0 +1,342 @@
+---
+layout: post
+title: システム認証設定
+category: "セキュリティ"
+---
+
+システム認証まわりを設定する。
+
+# 何ができるか
+
+- 名前解決の優先順位指定
+- ログインロック制限
+- パスワード制限
+
+
+
+# 方針
+
+sssd設定をベースに、新規にプロファイルを作成し、設定をカスタマイズする。
+
+（sssdの設定を変更してもよいが、特定の設定が上書きされてどうのこうの、ごにょごにょ。。\*2）
+
+
+
+
+# 設定コマンド
+
+```sh
+# 利用可能なプロファイル一覧を表示
+authselect list
+# 現在の設定を確認するcurrent
+authselect current
+# プロファイルの内容を確認
+authselect test sssd
+
+
+# 事前に新規プロファイル名を決める
+profile_name="myprofile"
+
+# プロファイル引き継ぎ作成：sssdを元にする。
+authselect create-profile "${profile_name}" --base-on sssd
+#or
+authselect create-profile "${profile_name}" -b sssd
+
+# 修正create
+# 設定ファイルの一覧
+ls -1 /etc/authselect/custom/"${profile_name}"
+
+# select(*1)
+authselect select custom/"${profile_name}"
+# 上書きが必要で、selectできないなら強制的に
+authselect select custom/"${profile_name}" --force
+
+
+# 新規プロファイルを修正前に適用をする
+authselect current
+# apply
+authselect apply-changes
+```
+
+## 適用内容確認
+
+```sh
+authselect test custom/"${profile_name}"
+```
+
+---
+
+# nsswitch.confの修正
+
+## 以下の項目を修正する場合
+
+- passwd
+- group
+- netgroup
+- automount
+- services
+
+```sh
+vi "/etc/authselect/custom/${profile_name}/nsswitch.conf"
+```
+
+## それ以外の場合
+
+`/etc/authselect/`下の`nsswitch.conf`を修正する。
+
+と言いつつ、実際、新規プロファイルを修正すればいい。
+
+検証として、次のことを実施した。
+
+1. `/etc/nsswitch.conf`に設定**`A`**を確認
+1. 新規プロファイル`/etc/authselect/custom/${profile_name}/nsswitch.conf`で、上の項目に当てはまらない設定`A`を**`B`**に修正
+1. 新規プロファイルを適用（`authselect apply-changes`）
+1. `/etc/nsswitch.conf`を確認すると、新規プロファイルに記載したもの**`B`**が設定されている。
+
+### つまり？
+
+独自の新規プロファイルを作成すれば、全て新規のプロファイルを修正すればいい（のではないか。設定が適用・上書きされている以上、これ以上議論が困難）。
+
+## 注釈
+
+### \*1 authselect selectの出力
+
+nsswitch.confの以下の項目は、プロファイルによって上書きされる旨、表示がある。
+
+```
+The following nsswitch maps are overwritten by the profile:
+- passwd
+- group
+- netgroup
+- automount
+- services
+```
+
+### \*2 何が、どの項目が上書きされるのか？
+
+\*1の項目が上書きされる。
+
+そのため、初めから、新規プロファイルを作成する方針にする。意味がわからないなら、とにかく新規のプロファイルを作って、新規のプロファイルを修正すればいい。
+
+
+
+---
+
+
+
+# /etc/pam.d下の設定ファイルについて
+
+selectauthに関係するため、認証、パスワード制限関連設定も続けて記載する。
+
+以下ファイルが、作成される。/etc/pam.d下のこれらのファイル（正確には場所が異なるものもある）は直接修正が推奨されていない。
+
+```sh
+# ls -1 /etc/authselect/custom/"${profile_name}"
+README
+REQUIREMENTS
+dconf-db
+dconf-locks
+fingerprint-auth
+nsswitch.conf
+password-auth
+postlogin
+smartcard-auth
+system-auth
+# 
+```
+
+# 認証制限
+
+## ログインミスによるロック、アンロック
+
+faillockの機能を有効化して、`/etc/security/faillock.conf`のパスワードミスのログインロックを実現する。
+
+本稿では、ロック、手動アンロックのみ試す。自動アンロックや、rootにも適用するかなど、設定がある。
+
+```sh
+# check status
+authselect current
+
+# before
+grep -n faillock /etc/pam.d/system-auth
+grep -n faillock /etc/pam.d/password-auth
+# => none
+
+# enable with-faillock
+authselect enable-feature with-faillock
+
+# check status
+authselect current
+
+# after
+grep -n faillock /etc/pam.d/system-auth
+grep -n faillock /etc/pam.d/password-auth
+# => hit
+
+# パスワードfaillockに関する有効設定一覧
+grep -v '^#' /etc/security/faillock.conf
+
+# ログイン２回ミスったら、アカウントロックを設定する
+echo 'deny = 2' >> /etc/security/faillock.conf
+```
+
+ちなみに、プロファイルを適用(`authselect apply-changes`)しても、`authselect enable-feature with-faillock`で追記された/etc/pam.dのfaillockの記述は、削除されない。つまり、プロファイルよりも`authselect enable-feature`コマンド（、または/etc/pam.dの内容）が優先されている。
+
+### 検証コマンド
+
+```sh
+userdel user ; useradd user ; passwd user
+su - user
+
+su - user # miss
+su - user # correct password -> success
+
+su - user # miss
+su - user # miss
+su - user # correct password -> failure(locked)
+```
+
+### 失敗状況確認、リセットコマンド
+
+```sh
+# 失敗状況確認
+faillock --user user
+
+# Failリセット
+faillock --user user --reset ; faillock --user user
+```
+
+# パスワード制限
+
+代表的な制限を取り扱うが、詳しくは、公式や参考文献を参照すること。
+
+## 使いまわし回数制限
+
+## 長さ制限
+
+```sh
+echo 'minlen = 6' >> /etc/security/pwquality.conf
+```
+
+６未満を指定しても６になる。最低が６になっている。
+
+### 検証コマンド
+
+```sh
+userdel user ; useradd user ; passwd user # 6文字以下を打つ
+```
+
+## パスワード種類制限
+
+```sh
+# 要求する小文字数
+echo 'lcredit = -1' >> /etc/security/pwquality.conf
+```
+
+```sh
+# 要求する大文字
+echo 'ucredit = -1' >> /etc/security/pwquality.conf
+```
+
+```sh
+# 要求する数字
+echo 'dcredit = -1' >> /etc/security/pwquality.conf
+```
+
+```sh
+# 要求する特殊文字
+echo 'ocredit = -1' >> /etc/security/pwquality.conf
+```
+
+- １文字含めるのを必須にする場合は、`-1`、２文字に必須にするには、`-2`、..
+- rootの`passwd`は警告が出るだけ。rootにも反映させるか設定はある。
+
+### 検証コマンド
+
+```sh
+userdel user ; useradd user ; passwd user # 例えば数字なしのパスワードを設定試行
+```
+
+## パスワード世代制限
+
+> 過去に使用したパスワードの使用を制限する。
+> ユーザーは設定された世代以内に同じパスワードを再び設定することができない。
+
+```sh
+# file1
+vi "/etc/authselect/custom/${profile_name}/system-auth"
+
+# file2
+vi "/etc/authselect/custom/${profile_name}/password-auth"
+```
+
+に
+
+### RHEL8の場合(過去2世代禁止)
+
+```
+password    sufficient                                   pam_unix.so sha512 shadow {if not "without-nullok":nullok} use_authtok
+```
+
+の最後に` remember=2`を追記する。
+
+```
+password    sufficient                                   pam_unix.so sha512 shadow {if not "without-nullok":nullok} use_authtok remember=2
+```
+
+プロファイルを適用する。
+
+```sh
+authselect current
+# apply
+authselect apply-changes
+```
+
+### RHEL9の場合(過去2世代禁止)
+
+```
+# 既存にある行
+password    requisite                                    pam_pwquality.so local_users_only
+```
+
+> [password] セクションで [pam_pwquality.so] の次に追記
+
+```
+password    requisite                                    pam_pwhistory.so remember=2 use_authtok
+```
+
+を追記する。
+
+プロファイルを適用する。
+
+```sh
+authselect current
+# apply
+authselect apply-changes
+```
+
+### 検証コマンド
+
+```sh
+userdel user ; useradd user ; passwd user
+su - user
+passwd
+# 過去のパスワードを設定して、設定できるかどうか試す。
+```
+
+#### パスワード履歴の初期化
+
+```sh
+vi /etc/security/opasswd # エントリーを消すか、
+cat /dev/null > /etc/security/opasswd
+```
+
+# Ref.
+
+- <https://docs.redhat.com/ja/documentation/red_hat_enterprise_linux/8/html/configuring_authentication_and_authorization_in_rhel/configuring-user-authentication-using-authselect_configuring-authentication-and-authorization-in-rhel>
+- <https://www.server-world.info/query?os=CentOS_8&p=pam>
+- <https://www.server-world.info/query?os=CentOS_Stream_9&p=pam>
+- <https://tech-lab.sios.jp/archives/41187>
+- ログインミスによるロック
+  - <https://qiita.com/sugar_salt75/items/546d340ef70bbb615d3d>
+  - <https://www.server-world.info/query?os=CentOS_8&p=pam&f=2>
