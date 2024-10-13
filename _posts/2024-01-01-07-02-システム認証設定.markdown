@@ -127,7 +127,7 @@ The following nsswitch maps are overwritten by the profile:
 
 # /etc/pam.d下の設定ファイルについて
 
-selectauthに関係するため、認証、パスワード制限関連設定も続けて記載する。
+authselectに関係するため、認証、パスワード制限関連設定も続けて記載する。
 
 以下ファイルが、作成される。/etc/pam.d下のこれらのファイル（正確には場所が異なるものもある）は直接修正が推奨されていない。
 
