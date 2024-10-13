@@ -177,7 +177,7 @@ grep -n faillock /etc/pam.d/password-auth
 # パスワードfaillockに関する有効設定一覧
 grep -v '^#' /etc/security/faillock.conf
 
-# ログイン２回ミスったら、アカウントロックを設定する
+# ログイン２回ミスったら、ログインロックを設定する
 echo 'deny = 2' >> /etc/security/faillock.conf
 ```
 
