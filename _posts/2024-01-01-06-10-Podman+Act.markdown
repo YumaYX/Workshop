@@ -1,0 +1,56 @@
+---
+layout: post
+title: Podman+Act
+category: "仮想化"
+---
+
+# Podmanでactを動かす
+
+## モチベーション
+
+- Podmanでactを動かす：Dockerを使用しない
+
+# Podman, actインストール
+
+前提として、Dockerはインストールしていない状態
+
+```sh
+# podman
+dnf -y install podman
+# act
+cd && curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+```
+
+# Podmanサービス起動
+
+actは、/var/run/docker.sockにapiを叩く。podmanをインストールすることで、`/run/podman/podman.sock`にエイリアスが張る。
+
+```
+[root@y ~]# ls -l /var/run/docker.sock
+lrwxrwxrwx. 1 root root 23 Oct 19 15:17 /var/run/docker.sock -> /run/podman/podman.sock
+[root@y ~]# 
+```
+
+Podmanのサービスを起動することで、/run/podman/podman.sockが生成される。
+
+```sh
+# as root
+podman system service -t 0 &
+# > -t: A value of 0 means no timeout, therefore the session does not expire.
+```
+
+# act実行時のコマンド
+
+`sudo /root/bin/act`
+
+一般ユーザーにて、Podmanのソケットを動作させようとした。しかし、手間（ステップ:dockerの変数変更、`loginctl enable-linger user`など打鍵）がかかるので、正攻法かもしれないが、シンプルでなくなるため、不採用とした。そのため、rootのhome(`/root/bin/act`)にactをインストールして、実行は、sudo経由のact実行(`sudo /root/bin/act`)がわかりやすく、手間もかからず、変な設定が残らず、act実行できる。
+
+ポイントとしては、rootのhome(`/root/bin/act`)にactをインストールし、Dockerの実行権限などに従い、actをroot実行をする点である。
+
+# デーモン化
+
+再起動後も常に起動するようにするにもできるが、現在必要がないため、省略する。
+
+# Ref.
+
+<https://docs.podman.io/en/latest/markdown/podman-system-service.1.html>

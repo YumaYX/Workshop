@@ -4,6 +4,8 @@ title: Docker+Act
 category: "仮想化"
 ---
 
+# ***<u>本記事は、Podmanで、act実行可能になったため、使用しない。「Podman+Act」を参照する。</u>***
+
 # 何ができるか
 
 - ローカル環境でGitHub Actions実行
