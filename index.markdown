@@ -5,7 +5,9 @@
 layout: default
 ---
 
-本プロジェクトは、Red Hat Enterprise Linux派生のディストリビューションを使用した検証の記録である。よく使うコマンドや設定集を紹介する。
+本プロジェクトは、Red Hat Enterprise Linux派生のディストリビューションを使用した検証の記録である。
+
+よく使うコマンドや設定集を紹介する。
 
 
 {% for category in  site.categories %}
