@@ -19,6 +19,6 @@ layout: default
 {% endfor %}
 {% endfor %}
 
-#### 付録
+## 付録
 
 - [コマンド集](/docs/#commands)
