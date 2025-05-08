@@ -29,13 +29,16 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.3'
+          ruby-version: '3'
           bundler-cache: true
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Build with jekyll
         # Outputs to the './_site' directory by default
-        run: bundle exec jekyll build
+        run: |
+          ruby app.rb
+          bundle exec jekyll build
+          sh mod.sh
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 
