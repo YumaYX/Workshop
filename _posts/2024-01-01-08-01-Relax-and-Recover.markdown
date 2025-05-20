@@ -147,7 +147,7 @@ OUTPUT_URL=file:///backup
 BACKUP=NETFS
 BACKUP_URL=file:///backup
 
-BACKUP_PROG_EXCLUDE=("${BACKUP_PROG_EXCLUDE[@]}" '/media' '/vat/tmp' '/var/crash' '/kdump' '/backup')
+BACKUP_PROG_EXCLUDE=("${BACKUP_PROG_EXCLUDE[@]}" '/media' '/var/tmp' '/var/crash' '/kdump' '/backup')
 LOGFILE="$LOG_DIR/rear-$HOSTNAME.log"
 GRUB_RESCUE=1
 EOF
