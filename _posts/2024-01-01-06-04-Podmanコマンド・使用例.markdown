@@ -13,6 +13,12 @@ dnf -y update
 dnf -y install podman podman-docker
 ```
 
+## Hello World
+
+```sh
+podman run hello-world
+```
+
 # 操作
 
 ## Container
