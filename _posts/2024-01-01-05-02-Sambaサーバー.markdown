@@ -89,6 +89,8 @@ systemctl restart smb.service nmb.service
 
 ### delete user
 
+ユーザーを削除する場合
+
 ```sh
 # 指定したユーザー userをローカルのsmbpasswdファイルから削除することを指示
 smbpasswd -x ${user}
