@@ -68,7 +68,8 @@ path = ${share_dir}
 valid users = ${user}
 SAMBACONF
 
-pdbedit -a -u ${user}
+#pdbedit -a -u ${user}
+(echo "${user}"; echo "${user}") | smbpasswd -a -s ${user}
 ```
 
 ## Setting of Directories
@@ -193,9 +194,9 @@ system_u:object_r:samba_share_t:s0 <dir/file name>
 
 ## 接続URI
 
-- cifs://vagrant:vagrant@192.168.11.123
-- cifs://vagrant:vagrant@192.168.11.123/Share
-- smb://vagrant:vagrant@192.168.11.123
+`smb://vagrant:vagrant@192.168.11.123`
+`cifs://vagrant:vagrant@192.168.11.123`
+`cifs://vagrant:vagrant@192.168.11.123/Share`
 
 # Windows 11からの接続
 
