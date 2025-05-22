@@ -70,11 +70,7 @@ SAMBACONF
 
 #pdbedit -a -u ${user}
 (echo "${user}"; echo "${user}") | smbpasswd -a -s ${user}
-```
 
-## Setting of Directories
-
-```sh
 # Setting of Directories
 yum install -y policycoreutils-python-utils
 
@@ -89,6 +85,13 @@ ls -1RZ $(dirname ${share_dir})
 
 systemctl enable  smb.service nmb.service
 systemctl restart smb.service nmb.service
+```
+
+### delete user
+
+```sh
+# 指定したユーザー userをローカルのsmbpasswdファイルから削除することを指示
+smbpasswd -x ${user}
 ```
 
 ## Connection Test
