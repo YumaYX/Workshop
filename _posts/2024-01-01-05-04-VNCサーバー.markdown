@@ -1,0 +1,87 @@
+---
+layout: post
+title: VNCサーバー
+category: "各種サーバー"
+---
+
+VNC(Virtual Network Computing)サーバーを構築する。リモートデスクトップ操作が可能になる。
+
+> WARNING: vncserver has been replaced by a systemd unit and is now considered deprecated and removed in upstream.
+
+# 想定環境
+
+- Samba Server: 192.168.11.123
+- User: user
+- Password: password
+
+# Build VNC Server
+
+```sh
+dnf -y update
+dnf -y groupinstall "Server with GUI"
+dnf -y install tigervnc-server
+
+firewall-cmd --permanent --add-port=5902/tcp
+firewall-cmd --reload
+
+user="user"
+su - ${user}
+```
+
+```sh
+vncserver -list
+vncserver -kill :2
+rm -rf ~/.vnc
+(echo password; echo password; echo n) | vncserver :2 -geometry 1280x960
+```
+
+# Macからの接続
+
+Finder -> 移動 -> サーバへ移動...(⌘+k)
+
+## 接続URI
+
+```sh
+vnc://user@192.168.11.123:5902
+```
+
+# close
+
+```sh
+vncserver -list | grep ^: | awk '{print $1}' | xargs -n1 vncserver -kill
+```
+
+# その他
+
+## 関連プロセスを強制終了（安全に落ちない場合）
+
+```sh
+pkill Xtightvnc
+pkill Xvnc
+pkill vnc
+pkill -u $USER
+```
+
+```sh
+pkill X
+```
+
+# Environments
+
+```
+[root@y ~]# cat /etc/redhat-release
+AlmaLinux release 9.6 (Sage Margay)
+[root@y ~]#
+```
+
+```
+[root@y ~]# Xvnc -version
+
+Xvnc TigerVNC 1.14.1 - built Apr  1 2025 00:00:00
+Copyright (C) 1999-2024 TigerVNC Team and many others (see README.rst)
+See https://www.tigervnc.org for information on TigerVNC.
+Underlying X server release 12011000
+
+[root@y ~]#
+```
+

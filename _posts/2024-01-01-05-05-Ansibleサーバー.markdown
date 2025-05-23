@@ -1,0 +1,51 @@
+---
+layout: post
+title: Ansibleサーバー
+category: "各種サーバー"
+---
+
+Ansibleサーバーを構築する。
+
+# Build Ansible Server
+
+```sh
+mkdir ansible && cd ${_}
+
+echo 'ansible' > requirements.txt #ansibleをインストールする場合
+echo 'ansible-core' >> requirements.txt
+
+python3 -m venv venv
+source venv/bin/activate && pip3 install --upgrade pip
+source venv/bin/activate && pip3 install --no-cache-dir -r requirements.txt
+```
+
+AlmaLinux 9（およびRHEL9）では、ansible-coreパッケージがAppStreamリポジトリに含まれており、インストール後、外部リポジトリ（EPELなど）を追加しなくても`dnf -y install ansible-core`でインストール可能である。ISO内にAppStreamが含まれている場合（DVD ISOなど）であれば、オフライン環境でもインストールできる。
+ansibleをAlmaLinux+dnfで使うにはEPELからインストールできる。
+
+```sh
+# install ansible
+dnf -y install epel-release
+dnf -y install ansible
+```
+
+# More Details...
+
+ホスト、コンフィグの書き方、ロールの作り方、実行方法は、以下のリンクから確認できる。
+
+[Ansibleの使い方](https://yumayx.github.io/docs/ansible/2024/05/18/Ansible.html)
+
+# Environments
+
+```
+[root@y ~]# cat /etc/redhat-release
+AlmaLinux release 9.6 (Sage Margay)
+[root@y ~]#
+```
+
+```
+(venv) [user@y ~/ansible] $ python3 --version
+Python 3.9.21
+(venv) [user@y ~/ansible] $
+```
+
+
