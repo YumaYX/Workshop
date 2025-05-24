@@ -16,7 +16,7 @@ VNC(Virtual Network Computing)サーバーを構築する。リモートデス�
 - User: user
 - Password: password
 
-# Build VNC Server
+# Build a VNC Server
 
 ```sh
 dnf -y update
