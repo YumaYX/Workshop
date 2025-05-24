@@ -28,7 +28,7 @@ dnf -y install epel-release
 dnf -y install ansible
 ```
 
-# More Details...
+# More Details
 
 ホスト、コンフィグの書き方、ロールの作り方、実行方法は、以下のリンクから確認できる。
 
