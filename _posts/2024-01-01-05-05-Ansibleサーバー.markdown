@@ -19,7 +19,9 @@ source venv/bin/activate && pip3 install --upgrade pip
 source venv/bin/activate && pip3 install --no-cache-dir -r requirements.txt
 ```
 
-## OSのパッケージマネージャーでインストールする場合
+## 他のインストール方法
+
+ディストリビューションのパッケージマネージャーでインストールすることも可能である。一般的にはこの方法が推奨されているらしい。
 
 AlmaLinux 9（およびRHEL9）では、ansible-coreパッケージがAppStreamリポジトリに含まれており、インストール後、外部リポジトリ（EPELなど）を追加しなくても`dnf -y install ansible-core`でインストール可能である。ISO内にAppStreamが含まれている場合（DVD ISOなど）であれば、オフライン環境でもインストールできる。
 ansibleをAlmaLinux+dnfで使うにはEPELからインストールできる。
