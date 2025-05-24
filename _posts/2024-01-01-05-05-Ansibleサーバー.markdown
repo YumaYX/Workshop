@@ -9,6 +9,11 @@ Ansibleサーバーを構築する。
 # Build Ansible Server
 
 ```sh
+# as root
+dnf -y install python3-pip
+```
+
+```sh
 mkdir ansible && cd ${_}
 
 echo 'ansible' > requirements.txt #ansibleをインストールする場合
@@ -28,6 +33,7 @@ ansibleをAlmaLinux+dnfで使うにはEPELからインストールできる。
 
 ```sh
 # install ansible
+# as root
 dnf -y install epel-release
 dnf -y install ansible
 ```
