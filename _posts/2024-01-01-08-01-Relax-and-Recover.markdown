@@ -118,7 +118,7 @@ rear mkbackupは、rear mkrescue + rear mkbackuponlyの打鍵を意味する。�
 
 ##### rear mkrescue
 
-バックアップをRear-and-Recover以外で行う場合は、rear mkresuceを使用するシーンが考えられる。Relax-and-Recoveryの使用する意義が薄れるため、mkrescue単独の使用は、考えにくい。
+バックアップをRear-and-Recover以外で行う場合は、rear mkrescueを使用するシーンが考えられる。Relax-and-Recoveryの使用する意義が薄れるため、mkrescue単独の使用は、考えにくい。
 
 ストレージレイアウトが変更された場合は、rear mkrescueにて、レスキューシステムの再作成が必要となる。
 
