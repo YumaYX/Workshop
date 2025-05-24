@@ -15,7 +15,7 @@ NTPサーバーを構築する。
 - Client：192.168.123.3
 - NTPサーバー問い合わせ先：ntp1.sakura.ad.jp
 
-# Build NTP Server:.2
+# Build a NTP Server:.2
 
 ```sh
 dnf -y install firewalld
@@ -42,7 +42,7 @@ timedatectl set-timezone Asia/Tokyo
 timedatectl
 ```
 
-# Build NTP Client:.3
+# Build a NTP Client:.3
 
 
 ```sh
