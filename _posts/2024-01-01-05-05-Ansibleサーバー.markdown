@@ -6,7 +6,7 @@ category: "各種サーバー"
 
 Ansibleサーバーを構築する。
 
-# Build Ansible Server
+# Build an Ansible Server
 
 ```sh
 # as root
