@@ -323,7 +323,7 @@ libvirtd (libvirt) 10.0.0
 [root@y ~]# 
 ```
 
-# Ref.
+# Reference
 
 - <https://developer.hashicorp.com/terraform/install>
 - <https://github.com/dmacvicar/terraform-provider-libvirt>

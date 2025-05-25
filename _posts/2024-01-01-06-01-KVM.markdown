@@ -72,7 +72,7 @@ virsh undefine guest1-rhel9 --remove-all-storage
 virsh start guest1-rhel9
 ```
 
-#### Ref.
+#### Reference
 
 - <https://docs.redhat.com/ja/documentation/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-virsh-delete>
 - <https://qiita.com/TsutomuNakamura/items/22d9d2629a8eb9360865>

@@ -53,7 +53,7 @@ rebootしても、拡張されている状態である(/etc/fstab -> /dev/mapper
 AlmaLinux release 9.4 (Seafoam Ocelot)
 ```
 
-# Ref.
+# Reference
 
 - <https://qiita.com/tomozo6/items/cdfb3ebc4be8bd19a2c9>
 

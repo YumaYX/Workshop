@@ -36,7 +36,7 @@ sudo yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 sudo systemctl enable --now docker
 ```
 
-##### Ref.
+##### Reference
 
 <https://docs.docker.com/engine/install/rhel/>
 

@@ -330,7 +330,7 @@ vi /etc/security/opasswd # エントリーを消すか、
 cat /dev/null > /etc/security/opasswd
 ```
 
-# Ref.
+# Reference
 
 - <https://docs.redhat.com/ja/documentation/red_hat_enterprise_linux/8/html/configuring_authentication_and_authorization_in_rhel/configuring-user-authentication-using-authselect_configuring-authentication-and-authorization-in-rhel>
 - <https://www.server-world.info/query?os=CentOS_8&p=pam>

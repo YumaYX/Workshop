@@ -104,7 +104,7 @@ rm -i 1G.dummy.*
 AlmaLinux release 9.4 (Seafoam Ocelot)
 ```
 
-# Ref.
+# Reference
 
 - <https://qiita.com/TsutomuNakamura/items/93c6333c8dd32aeb197a>
 

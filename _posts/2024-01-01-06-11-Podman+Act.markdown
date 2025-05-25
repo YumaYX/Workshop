@@ -51,6 +51,6 @@ podman system service -t 0 &
 
 再起動後も常に起動するようにするにもできるが、現在必要がないため、省略する。
 
-# Ref.
+# Reference
 
 <https://docs.podman.io/en/latest/markdown/podman-system-service.1.html>
