@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Podmanコマンド・使用例"
-category: "仮想化"
+category: "コンテナ"
 ---
 
 コンテナの操作コマンドと使用例を紹介する。

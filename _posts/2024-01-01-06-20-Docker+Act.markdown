@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Docker+Act
-category: "仮想化"
+category: "コンテナ"
 ---
 
 # ***<u>本記事は、Podmanで、act実行可能になったため、使用しない。「Podman+Act」を参照する。</u>***

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Podman+Act
-category: "仮想化"
+category: "コンテナ"
 ---
 
 # Podmanでactを動かす

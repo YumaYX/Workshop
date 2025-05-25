@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "コンテナ配布シナリオ"
-category: "仮想化"
+category: "コンテナ"
 ---
 
 閉域環境でのコンテナ配布シナリオを考える。
