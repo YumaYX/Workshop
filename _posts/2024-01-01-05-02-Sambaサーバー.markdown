@@ -69,7 +69,7 @@ valid users = ${user}
 SAMBACONF
 
 #pdbedit -a -u ${user}
-(echo "${user}"; echo "${user}") | smbpasswd -a -s ${user}
+(echo "${pass}"; echo "${pass}") | smbpasswd -a -s ${user}
 
 # Setting of Directories
 yum install -y policycoreutils-python-utils
