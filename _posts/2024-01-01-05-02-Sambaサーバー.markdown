@@ -199,15 +199,15 @@ system_u:object_r:samba_share_t:s0 <dir/file name>
 ## 接続URI
 
 ```sh
-smb://vagrant:vagrant@192.168.11.123`
+smb://vagrant:vagrant@192.168.11.123
 ```
 
 ```sh
-cifs://vagrant:vagrant@192.168.11.123`
+cifs://vagrant:vagrant@192.168.11.123
 ```
 
 ```sh
-cifs://vagrant:vagrant@192.168.11.123/Share`
+cifs://vagrant:vagrant@192.168.11.123/Share
 ```
 
 # Windows 11からの接続
