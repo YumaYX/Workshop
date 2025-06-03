@@ -113,9 +113,8 @@ Linux上でマウントする際は、一般ユーザに権限を与える形(ui
 
 ```sh
 dnf -y install cifs-utils
-# as vagrant
 # uid,gidはユーザに合わせる
-mount -t cifs -o username=vagrant,password=vagrant,uid=1000,gid=1000 '//192.168.11.123/Share' /media ; echo $?
+sudo mount -t cifs -o username=vagrant,password=vagrant,uid=1000,gid=1000 '//192.168.11.123/Share' /media ; echo $?
 ```
 
 #### マウントコマンド詳細
