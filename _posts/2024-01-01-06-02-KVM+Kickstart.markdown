@@ -50,14 +50,17 @@ KICKSTART
 待つだけ。
 
 ```sh
+cd /tmp
+curl -O https://ftp.riken.jp/Linux/almalinux/9.6/isos/x86_64/AlmaLinux-9-latest-x86_64-minimal.iso
+
 virt-install \
 --name guest1-rhel9 \
 --memory 2048 \
 --vcpus 2 \
 --network default \
 --disk size=20 \
---location /tmp/AlmaLinux-9.4-x86_64-minimal.iso \
---os-variant rhel9.4 \
+--location /tmp/AlmaLinux-9-latest-x86_64-minimal.iso \
+--os-variant rhel9.5 \
 --graphics none \
 --accelerate \
 --initrd-inject /tmp/ks.cfg \
