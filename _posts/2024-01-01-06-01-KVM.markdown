@@ -6,7 +6,7 @@ category: "仮想化"
 
 KVMを使って、仮想マシンをブートする。
 
-# kvm:libvirtのインストール
+# KVM, QEMU, libvirtのインストール
 
 as root
 
