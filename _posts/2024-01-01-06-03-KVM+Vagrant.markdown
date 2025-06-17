@@ -8,7 +8,7 @@ KVMをVagrantを使って、仮想マシンをブートする。
 
 `virsh`コマンドを使って、仮想マシンを作成、操作する方法もあるが、ここでは、vagrantを使って、仮想マシンを操作する。
 
-# Install kvm:libvirt, Vagrant
+# Install KVM, QEMU, libvirt, Vagrant
 
 as root
 
