@@ -9,6 +9,7 @@ layout: default
 
 よく使うコマンドや設定集を紹介する。
 
+*※10系の検証は、[R-X](https://yumayx.github.io/R-X/)で行なっている。*
 
 {% for category in  site.categories %}
 ## {{ forloop.index }} {{ category[0] }}
