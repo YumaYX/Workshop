@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "付録：ssh x 鍵を深掘り"
+title: "付録：ssh x 鍵を調査"
 category: "ユーザー管理"
 ---
 
