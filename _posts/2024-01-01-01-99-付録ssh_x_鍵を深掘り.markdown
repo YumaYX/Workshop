@@ -160,6 +160,7 @@ cat /root/.ssh/authorized_keys >> /home/first/.ssh/authorized_keys
 
 ```sh
 # as root
+ssh -v first@172.17.64.101
 ssh -v -i /root/.ssh/id_ed25519 first@172.17.64.101
 # l /root/.ssh/id_ed25519
 # r /home/first/.ssh/authorized_keys
