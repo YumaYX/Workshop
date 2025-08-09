@@ -1,0 +1,149 @@
+---
+layout: post
+title: "付録：ssh x 鍵を深掘り"
+category: "ユーザー管理"
+---
+
+- **注意：**
+  - 本設定は検証のため、実運用では使用しないこと。
+  - sshd_configの設定にもよるので、参考として、確認。
+
+## 環境
+
+- vagrant(almalinux/9)
+- host1
+  - client(100)
+  - user:first
+- host2
+  - server(101)
+
+## `first`ユーザー作成とパスワード設定
+
+* `useradd first` と `passwd first`でユーザー作成。
+* 作成先サーバーとアクセス元サーバーの両方で`first`を用意。
+
+```sh
+#2 as root
+useradd first
+passwd first
+```
+
+```sh
+#1 as root
+useradd first
+```
+
+## `first`のSSH鍵ペア作成と登録
+
+* `ssh-keygen -t ed25519`で秘密鍵`~/.ssh/id_ed25519`と公開鍵を生成。
+* `ssh-copy-id`で公開鍵を相手サーバーの`~/.ssh/authorized_keys`に登録。
+
+```sh
+su - first
+
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" -q
+chmod 600 ~/.ssh/id_ed25519
+ssh-copy-id -i ~/.ssh/id_ed25519.pub first@172.17.64.101
+```
+
+## 接続検証（firstユーザー）
+
+* 鍵指定なし`ssh -v 172.17.64.101`や、鍵指定あり`ssh -i ~/.ssh/id_ed25519`でテスト。
+
+```sh
+# as first user
+ssh -v 172.17.64.101
+ssh -v -i .ssh/id_ed25519 first@172.17.64.101
+
+# l /home/first/.ssh/id_ed25519
+# r /home/first/.ssh/authorized_keys
+
+# => firstの秘密鍵、firstの公開鍵
+```
+
+## 検証
+
+```sh
+# as root
+ssh 172.17.64.101
+# => 不通
+
+ssh -v -i /home/first/.ssh/id_ed25519 first@172.17.64.101
+# l /home/first/.ssh/id_ed25519
+# r /home/first/.ssh/authorized_keys
+
+ssh first@172.17.64.101
+# => password auth(first's password)
+```
+
+## rootの接続許可
+
+* `/etc/ssh/sshd_config` に `PermitRootLogin yes` を追記。
+* `systemctl restart sshd`で反映。
+* rootパスワードを設定して、root→rootのパスワード接続確認。
+
+```sh
+# as root @ server
+# add PermitRootLogin yes to the /etc/ssh/sshd_config file.
+echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+systemctl restart sshd
+passwd
+```
+
+## 検証
+
+```sh
+# as root
+ssh 172.17.64.101
+# => password auth(root's password)
+```
+
+```sh
+# as root
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -N "" -q
+ssh-copy-id -i ~/.ssh/id_ed25519.pub 172.17.64.101; echo ${?}
+```
+
+## root鍵で`first`に接続を試みる
+
+```sh
+# as root
+ssh -v 172.17.64.101
+# l /root/.ssh/id_ed25519
+# r /root/.ssh/authorized_keys
+
+ssh -v first@172.17.64.101
+# password auth(first's password)
+
+ssh -v -i /home/first/.ssh/id_ed25519 first@172.17.64.101
+# l /home/first/.ssh/id_ed25519
+# r /home/first/.ssh/authorized_keys
+
+ssh -v -i /root/.ssh/id_ed25519 first@172.17.64.101
+# attempt /root/.ssh/id_ed25519
+# Next authentication method: passwordに切り替わった。
+# => password auth(first's password)
+```
+
+rootの秘密鍵を指定して`first@172.17.64.101`へ接続すると、鍵が一致しないためパスワード認証にフォールバック。
+
+## root鍵をfirstの`authorized_keys`に追記
+
+* `cat /root/.ssh/authorized_keys >> /home/first/.ssh/authorized_keys`
+
+```sh
+# as root
+cat /root/.ssh/authorized_keys >> /home/first/.ssh/authorized_keys
+```
+
+
+## 検証
+
+* rootが自身の秘密鍵を使い、`first@172.17.64.101`へ鍵認証の確認。
+
+```sh
+# as root
+ssh -v -i /root/.ssh/id_ed25519 first@172.17.64.101
+# l /root/.ssh/id_ed25519
+# r /home/first/.ssh/authorized_keys
+```
