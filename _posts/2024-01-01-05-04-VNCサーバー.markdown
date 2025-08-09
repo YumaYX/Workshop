@@ -6,7 +6,7 @@ category: "各種サーバー"
 
 VNC(Virtual Network Computing)サーバーを構築する。リモートデスクトップ操作が可能になる。
 
-<strong>注意:</strong>本稿では、`vncserver`コマンドを使用している。下の警告メッセージにもあるように、アップストリームでは、systemdのunitに置き換わっている。unitを使って、VVNCサーバーを使用したい場合は、別のドキュメントを参照すること。
+<strong>注意:</strong>本稿では、`vncserver`コマンドを使用している。下の警告メッセージにもあるように、アップストリームでは、systemdのunitに置き換わっている。unitを使って、VNCサーバーを使用したい場合は、別のドキュメントを参照すること。
 
 > WARNING: vncserver has been replaced by a systemd unit and is now considered deprecated and removed in upstream.
 
