@@ -1,0 +1,81 @@
+---
+layout: post
+title: コールドバックアップ・リストア
+category: "バックアップリストア"
+---
+
+## 何ができるか
+
+- Linux OS(ディスク)のコールドバックアップとリストア
+
+## 想定環境
+
+- /dev/vda
+  - OSディスク
+  - UEFI
+- /dev/vdb
+  - バックアップ格納先
+
+## 注意
+
+- ディスクの操作は、必ずOS停止中に行うこと
+
+
+## 手順
+
+### バックアップ用のディスクを用意とバックアップ
+
+1. OSインストールメディアから、ブートして、レスキューモードでシェルを起動する。
+1. 以下のコマンドを打鍵する。
+    1. GPT形式でXFSファイルシステムを使って、パーティションを作成する。
+    1. バックアップを作成する。
+
+```sh
+bkdir='/backup'
+mkdir -p "${bkdir}"
+
+bkdisk=/dev/vdb
+
+# Disk初期化
+shred -vz -n 0 ${bkdisk}
+
+# パーティション作成
+parted -s ${bkdisk} mklabel gpt
+parted -s ${bkdisk} 'mkpart primary 1 -1'
+mkfs.xfs ${bkdisk}1
+
+# Diskマウント
+mount ${bkdisk}1 ${bkdir}
+
+# バックアップ
+dd if=/dev/vda bs=16MB iflag=nocache oflag=nocache,dsync | pigz > ${bkdir}/vda_backup.image.gz
+```
+
+### リストア
+
+1. OSインストールメディアから、ブートして、レスキューモードでシェルを起動する。
+1. 以下のコマンドを打鍵する。
+    1. バックアップイメージをデバイスに書き込む。
+
+```sh
+bkdir='/backup'
+mkdir -p "${bkdir}"
+bkdisk=/dev/vdb
+mount ${bkdisk}1 ${bkdir}
+
+# リストア
+gunzip -c ${bkdir}/vda_backup.image.gz | dd of=/dev/vda bs=16MB status=progress
+```
+
+### その他
+
+- 仮想環境(KVM)にて検証実施
+- /dev/vdaに0書き込み後、リストアを実施して、OSが起動することを確認済み
+- /dev/vdaを削除後別ディスクを追加し、リストアを実施して、OSが起動することを確認済み
+
+古典。
+
+##### Reference
+
+- <https://qiita.com/taiyodayo/items/7c60c9b3bc00b13baf43>
+
