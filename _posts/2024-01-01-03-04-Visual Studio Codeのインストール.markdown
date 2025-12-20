@@ -19,3 +19,17 @@ sudo dnf -y install code
 ```
 
 <https://code.visualstudio.com/docs/setup/linux#_rhel-fedora-and-centos-based-distributions>
+
+
+# sshリモート先のディレクトリを開く方法
+
+1. VS Code左下の`><`のボタンをクリック
+1. `SSH`を選択
+1. `Add new host`を選択
+1. `ssh -i <key> <user>@<hostname>`を入力
+
+## 接続
+
+1. VS Code左下の`><`のボタンをクリック
+1. `SSH`を選択
+1. ホストを選択して接続
