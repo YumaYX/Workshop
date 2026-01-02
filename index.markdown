@@ -18,5 +18,5 @@ layout: default
 
 ## 付録
 
-- [コマンド集](/docs/#commands)
+- [コマンド集](/docs/commands/)
 - [プロジェクトレポジトリ](https://github.com/YumaYX/Workshop)
