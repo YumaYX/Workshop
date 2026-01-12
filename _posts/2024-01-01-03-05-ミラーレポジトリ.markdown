@@ -1,0 +1,141 @@
+---
+layout: post
+title: ミラーレポジトリ
+category: "パッケージレポジトリ"
+---
+
+ミラーレポジトリを構築する。
+
+- ネットワーク内にミラーを置けば、外部ネットワークに出られない環境でも利用可能となる。
+- 地理的に近いミラーを使えるので、クローンや依存関係の取得が速くなる。
+
+## 対象
+
+- AlmaLinux BaseOS
+- AlmaLinux AppStream
+
+## 手順
+
+ミラーレポジトリ運用に必要なパッケージをインストールする。
+
+```sh
+dnf clean all
+dnf -y install httpd && systemctl enable --now httpd
+dnf -y install createrepo yum-utils createrepo_c
+```
+
+以下を定期的に実行することで、レポジトリが最新に保たれる。
+
+```sh
+destination='/var/www/html/r/al9.7'
+mkdir -p  "${destination}"
+
+dnf reposync \
+  --repo=baseos \
+  --repo=appstream \
+  --download-path=${destination} \
+  --download-metadata \
+  --downloadcomps \
+  --delete \
+  --newest-only
+
+for r in baseos appstream
+do
+  createrepo_c --update ${destination}/${r}
+done
+```
+
+- メタデータのダウンロード手順が抜けている文献もインターネットに転がっており、ひどい文献もあった。
+- `createrepo`は使用しない。`_c`付きを使う。
+  - 初回から`--update`付きでも動作した。
+- dnfでnot foundが出るなら、公式ミラーから取得し直す。sync途中で止めたことが原因と考えられる。
+
+---
+
+# おまけ
+
+- repoファイルの設定例
+  - ミラーレポのサーバーIPアドレスが`192.168.11.42`
+  - mirrorlistじゃなくて、baseurlを残す。
+
+```sh
+cat <<'BASEOSEOL' > almalinux-baseos.repo
+[baseos]
+name=AlmaLinux $releasever - BaseOS
+baseurl=http://192.168.11.42/r/al9.7/baseos
+enabled=1
+gpgcheck=1
+countme=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-9
+metadata_expire=86400
+enabled_metadata=1
+
+[baseos-debuginfo]
+name=AlmaLinux $releasever - BaseOS - Debug
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/baseos-debug
+# baseurl=https://vault.almalinux.org/$releasever/BaseOS/debug/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-9
+metadata_expire=86400
+enabled_metadata=0
+
+[baseos-source]
+name=AlmaLinux $releasever - BaseOS - Source
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/baseos-source
+# baseurl=https://vault.almalinux.org/$releasever/BaseOS/Source/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-9
+metadata_expire=86400
+enabled_metadata=0
+BASEOSEOL
+```
+
+```sh
+cat <<'APPSTREAMEOL' > almalinux-appstream.repo
+[appstream]
+name=AlmaLinux $releasever - AppStream
+baseurl=http://192.168.11.42/r/al9.7/appstream
+enabled=1
+gpgcheck=1
+countme=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-9
+metadata_expire=86400
+enabled_metadata=1
+
+[appstream-debuginfo]
+name=AlmaLinux $releasever - AppStream - Debug
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/appstream-debug
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-9
+metadata_expire=86400
+enabled_metadata=0
+
+[appstream-source]
+name=AlmaLinux $releasever - AppStream - Source
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/appstream-source
+# baseurl=https://vault.almalinux.org/$releasever/AppStream/Source/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-9
+metadata_expire=86400
+enabled_metadata=0
+APPSTREAMEOL
+```
+
+### vagrantで使うとき
+
+```ruby
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo cp -pv /vagrant/almalinux-baseos.repo    /etc/yum.repos.d/almalinux-baseos.repo
+    sudo cp -pv /vagrant/almalinux-appstream.repo /etc/yum.repos.d/almalinux-appstream.repo
+    dnf clean all
+  SHELL
+```
+
+#### Link
+
+- <https://ftp.riken.jp/Linux/almalinux/>
+
