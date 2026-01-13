@@ -1,0 +1,49 @@
+---
+layout: post
+title: "Podmanコマンド・単発実行例"
+category: "コンテナ"
+---
+
+# Example
+
+## Rustを使いたい
+
+```sh
+podman run --userns=keep-id --rm \
+  -v $PWD:/m:Z \
+  -w /m \
+  docker.io/library/rust:latest \
+  cargo --version
+```
+
+## Gemfile(bundler)を扱いたい
+
+```sh
+rubyrepo='docker.io/library/ruby:latest'
+workdir='/w'
+mkdir -p $PWD/vendor/bundle
+
+podman run --userns=keep-id --rm -it \
+  -v "$PWD:${workdir}:Z" \
+  -v "$PWD/vendor/bundle:/usr/local/bundle:Z" \
+  -w ${workdir} \
+  ${rubyrepo} \
+  bundle --version
+```
+
+## Rubyスクリプトを実行したい
+
+```sh
+rubyrepo='docker.io/library/ruby:latest'
+workdir='/w'
+
+podman run --userns=keep-id --rm \
+  -v $PWD:${workdir}:Z \
+  -w ${workdir} \
+  ${rubyrepo} \
+  ruby -v
+```
+
+- `-v` mount_src_dir:mount_dst_dir:Z
+  - Z,ro: read only
+- 
