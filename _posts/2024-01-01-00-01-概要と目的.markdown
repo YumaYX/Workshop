@@ -46,5 +46,5 @@ AlmaLinuxで頻繁に使用されるコマンドや操作をまとめたチー�
 `wget`を使用して、本サイトを丸ごとダウンロードできる。オフライン環境でも閲覧可能である。
 
 ```sh
-wget -pkr -l1 -w3 --random-wait https://yumayx.github.io/Workshop/
+wget -pkr -l1 -w1 --random-wait https://yumayx.github.io/Workshop/
 ```
