@@ -1,0 +1,122 @@
+---
+layout: post
+title: "systemd timerによる定期実行"
+category: "systemd"
+---
+
+定期実行について取り扱う。参考文献のほぼ引用の内容となっている。
+
+## Reference
+
+- <https://tech-lab.sios.jp/archives/48489>
+- <https://zenn.dev/hcompany/articles/20260119_systemd_timer>
+
+# Cronとの違い
+
+- cron: 時間に従って、実行
+- systemd timer: 状態管理しながら、実行
+
+適する場面に応じて、使い分けることが必要。
+
+# 使い方
+
+下の`SERVICE file`, `TIMER file`, `Shell`を作成する。続いて下の`Commands`に従って、実行を設定する。
+
+## SERVICE file
+
+```sh
+cat <<'EOF' > /etc/systemd/system/test.service
+[Unit]
+Description=test script
+
+[Service]
+Type=oneshot
+ExecStart=bash /tmp/test.sh
+EOF
+```
+
+`ExecStart`の書き方について、実行するシェル名を直接書いてもいいが、SELinuxが作動し、Permission deniedで実行できなかった(timerに限らず、systemdファイルの記載時によく起こりうる）。避ける方法としては、ファイルのSELinux Contextsを修正する、または`bash "shell name"`のように、bashを実行させるよう見せかける必要がある。今回の検証では、後者を採用している。まさか、SELinuxを動作させない管理者なんて居ない。まさかね。
+
+## TIMER file
+
+```sh
+cat <<'EOF' > /etc/systemd/system/test.timer
+[Unit]
+Description=Run test script
+
+[Timer]
+OnCalendar=minutely
+
+[Install]
+WantedBy=timers.target
+EOF
+```
+
+`Persistent=true`で、実行時刻を逃しても後で実行できる。
+
+<https://tech-lab.sios.jp/archives/48489>より、
+
+> OnCalendar
+> 最も一般的な設定方法で、特定の日時、定期的なタイミング (毎日、毎分など) を指定します。
+> ■ 例1：OnCalendar=daily (毎日)
+> ■ 例2：OnCalendar=Sat,Sun 09:00 (毎週土日の午前 9時)
+> ■ 例3：OnCalendar=\*-\*-\* 09:00:00 (毎日午前 9時)
+> なお、例3 のように特定の時刻は YYYY-MM-DD HH:MM:SS 形式で指定できます。
+> \* はすべての時刻を表します。
+> OnActiveSec
+> タイマーが有効化されてからの時間を指定します。
+> 具体的には、対象の .timer ユニットが active になってからの時間になります。
+> ■ 例：OnActiveSec=15min (タイマーが有効化されてから 15分後)
+> OnBootSec
+> システムが起動してからの秒数を指定します。
+> 具体的には、systemd が boot.target に到達してからの時間になります。
+> ■ 例：OnBootSec=15min (システムが起動されてから 15分後)
+
+`OnCalendar=1999-12-31 12:34:56`というように書ける。
+
+## Shell
+
+```sh
+chmod +x /tmp/test.sh
+cat <<'EOF' > /tmp/test.sh
+#!/bin/bash
+echo "$(date)" >> /tmp/test
+EOF
+```
+
+## Commands
+
+### 実行（実行登録）
+
+```sh
+systemctl daemon-reload
+systemctl enable --now test.timer
+```
+
+### 次回実行予定の確認
+
+```sh
+systemctl list-timers --all
+```
+
+### ログ確認
+
+```sh
+journalctl -u test.service
+```
+
+#### clean env for test
+
+```sh
+#systemctl stop test.timer
+systemctl disable test.timer
+
+rm \
+  /etc/systemd/system/test.service \
+  /etc/systemd/system/test.timer \
+  /tmp/test.sh
+```
+
+# 参考文献
+
+上部に記載
