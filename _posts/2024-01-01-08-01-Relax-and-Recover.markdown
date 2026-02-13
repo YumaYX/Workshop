@@ -9,7 +9,7 @@ Relax-and-Recoverを用いて、サーバーバックアップ・リストアを
 # 何ができるか？
 
 - 構築したLinux環境のバックアップ、リストア
-    - ディザスタリカバリ
+    - ディザスタリカバリー
 - 削除したファイルの復元
 - リラックス
 
@@ -60,7 +60,7 @@ OUTPUT=ISO
 BACKUP=NETFS
 BACKUP_URL="nfs://192.168.100.2/nfs/"
 
-BACKUP_PROG_EXCLUDE=("${BACKUP_PROG_EXCLUDE[@]}" '/media' '/vat/tmp' '/var/crash' '/kdump')
+BACKUP_PROG_EXCLUDE=("${BACKUP_PROG_EXCLUDE[@]}" '/media' '/var/tmp' '/var/crash' '/kdump')
 LOGFILE="$LOG_DIR/rear-$HOSTNAME.log"
 GRUB_RESCUE=1
 EOF
@@ -78,7 +78,7 @@ echo 'USING_UEFI_BOOTLOADER=1' >> /etc/rear/local.conf
   <dd>tar.gzのバックアップファイルの出力先</dd>
 </dl>
 
-/media、/vat/tmp、/var/crash、/kdumpは、バックアップ対象から外す。
+/media、/var/tmp、/var/crash、/kdumpは、バックアップ対象から外す。
 
 # Backup :.1
 
@@ -108,7 +108,7 @@ reboot
 
 リストア時、BACKUP_URLのバックアップファイルの場所を自動で探すため、NFSサーバーに到達できる場所でリストアを行う。自動でNFSマウントして、情報をダウンロード、展開してくれる。
 
-本稿の例の場所にバックアップファイルを出力していない場合は、BACKUP_URLと同じ場所にマウントして、からrear recoverコマンドを打鍵する必要がある。file:///backupの場合は、/backupにマウントする。推奨しないため、詳細の例は省略する。
+本稿の例の場所にバックアップファイルを出力していない場合は、BACKUP_URLと同じ場所にマウントしてからrear recoverコマンドを打鍵する必要がある。file:///backupの場合は、/backupにマウントする。推奨しないため、詳細の例は省略する。
 
 ### その他
 
@@ -118,7 +118,7 @@ rear mkbackupは、rear mkrescue + rear mkbackuponlyの打鍵を意味する。�
 
 ##### rear mkrescue
 
-バックアップをRear-and-Recover以外で行う場合は、rear mkrescueを使用するシーンが考えられる。Relax-and-Recoveryの使用する意義が薄れるため、mkrescue単独の使用は、考えにくい。
+バックアップをRelax-and-Recover以外で行う場合は、rear mkrescueを使用するシーンが考えられる。Relax-and-Recoverの使用する意義が薄れるため、mkrescue単独の使用は、考えにくい。
 
 ストレージレイアウトが変更された場合は、rear mkrescueにて、レスキューシステムの再作成が必要となる。
 
