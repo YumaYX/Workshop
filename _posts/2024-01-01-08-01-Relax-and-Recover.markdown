@@ -218,4 +218,3 @@ Relax-and-Recover 2.6 / 2020-06-17
 # Reference
 
 - [Relax-and-Recover](https://relax-and-recover.org/)
-- [Relax-and-Recover | Workshop](https://yumayx.github.io/Workshop/%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%83%AA%E3%82%B9%E3%83%88%E3%82%A2/2024/01/01/08-01-Relax-and-Recover.html)
