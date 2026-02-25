@@ -1,15 +1,9 @@
 ---
-# Feel free to add content and custom Front Matter to this file.
-# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-
 layout: default
 ---
 
-本プロジェクトは、Red Hat Enterprise Linux派生のディストリビューションを使用した検証の記録である。
-
+本プロジェクトは、Red Hat Enterprise Linuxクローンを使用した検証の記録である。
 よく使うコマンドや設定集を紹介する。
-
-*※10系の検証は、[R-X](https://yumayx.github.io/R-X/)で行なっている。*
 
 {% for category in  site.categories %}
 ## {{ forloop.index }} {{ category[0] }}
